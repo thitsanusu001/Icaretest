@@ -1,0 +1,3278 @@
+<!DOCTYPE html>
+
+<html lang="th">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>
+   Latbualuang iCARE+
+  </title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<style>
+   body { font-family: 'Prompt', sans-serif; }
+
+/* Ensure modal is always centered on all devices */
+.modal {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4); /* Optional: darken background */
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  max-width: 90%;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+  </style>
+<link href="https://fonts.googleapis.com/css2?family=Mitr&amp;display=swap" rel="stylesheet"/>
+<style>
+   .font-mitr { font-family: "Mitr", sans-serif; }
+  </style>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2&amp;display=swap" rel="stylesheet"/>
+<style>
+   .font-exo2 { font-family: "Exo 2", sans-serif; }
+  </style>
+<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/th.js">
+</script>
+<style>
+   input[type="file"] + label,
+input[type="file"] {
+  color: #60A5FA !important;
+}
+
+input[type="file"]::file-selector-button {
+  display: none;
+}
+
+/* Center modal popup style */
+.modal {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 10px;
+}
+  </style>
+
+<style>
+/* Emergency form file inputs: light blue text, white background, white frame */
+#emergencyForm input[type="file"] {
+  color: #60A5FA !important;          /* ข้อความ "ไม่ได้เลือกไฟล์ใด" เป็นฟ้าอ่อน */
+  background-color: #FFFFFF !important; /* พื้นหลังสีขาว */
+  border: 2px solid #FFFFFF !important; /* กรอบสีขาวชัดเจน */
+  padding: 0.5rem 0.75rem;              /* ให้มีพื้นที่รอบข้อความเล็กน้อย */
+  border-radius: 0.375rem;              /* ให้โค้งมนตามสไตล์เดิม */
+}
+/* Hide default button for consistency (already hidden, keep as safety) */
+#emergencyForm input[type="file"]::file-selector-button {
+  display: none;
+}
+</style>
+
+</head>
+<body class="bg-gradient-to-b from-blue-50 to-white font-sans text-gray-800">
+<!-- Header -->
+<header class="bg-blue-900 text-white px-6 py-3 flex items-center justify-between shadow-md f l e x - w r a p m d : f l e x - n o w r a p">
+<div class="flex items-center space-x-4">
+<img alt="โรงเรียน" class="h-10 sm:h-12 md:h-14" src="https://img5.pic.in.th/file/secure-sv1/2408f05cc396274b4.png"/>
+<div>
+<h1 class="text-base sm:text-lg md:text-xl font-bold leading-tight">
+      โรงเรียนลาดบัวหลวงไพโรจน์วิทยา
+     </h1>
+<p class="text-xs sm:text-sm md:text-base">
+      LATBUALUANGPAIROTEWITTAYA SCHOOL
+     </p>
+</div>
+</div>
+<div class="space-x-2 flex flex-col sm:flex-row space-y-2 sm:space-y-0 items-center">
+<button class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded" onclick="document.getElementById('loginModal').classList.remove('hidden')">
+     🔐 Login
+    </button>
+<div class="relative inline-block text-left">
+<button class="bg-white text-blue-900 border border-white px-3 py-1 rounded inline-flex items-center justify-center w-full" id="registerDropdownBtn">
+      👤 ลงทะเบียน ▾
+     </button>
+<div class="hidden absolute right-0 mt-2 w-48 bg-white border rounded shadow z-50" id="dropdownMenu">
+<a class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100" href="#" onclick="openModal('studentModal')">
+       👨‍🎓 นักเรียน
+      </a>
+<a class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100" href="#" onclick="openModal('teacherModal')">
+       👨‍🏫 ครู
+      </a>
+</div>
+</div>
+<script>
+     document.getElementById('registerDropdownBtn').addEventListener('click', function(event) {
+  event.stopPropagation();
+  document.getElementById('dropdownMenu').classList.toggle('hidden');
+});
+document.addEventListener('click', function(event) {
+  const dropdown = document.getElementById('dropdownMenu');
+  if (!dropdown.contains(event.target)) dropdown.classList.add('hidden');
+});
+function openModal(id) {
+  document.getElementById(id).classList.remove('hidden');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.add('hidden');
+}
+    </script>
+<!-- Student Modal -->
+<script>
+     function checkFileSize(input) {
+  if (input.files[0].size > 1024 * 1024) {
+    alert("ไฟล์ต้องมีขนาดไม่เกิน 1MB");
+    input.value = "";
+  }
+}
+
+      const form = e.target;
+    const formData = new FormData(form);
+    const jsonData = {};
+
+    formData.forEach((value, key) => {
+      jsonData[key] = value;
+    });
+
+    fetch("https://script.google.com/macros/s/AKfycbxdY__BNd_oV2kTNa4rT7lS0YaHJHwRPGCHCR9PmcPBfKnTXZfLWXbx1Nf1FslsRuUH/exec", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(jsonData)
+    })
+    .then(response => response.text())
+    .then(result => {
+      document.getElementById("studentStatus").innerHTML = "✅ " + result;
+      form.reset();
+    })
+    .catch(error => {
+      console.error("Error!", error.message);
+      document.getElementById("studentStatus").innerHTML = "❌ เกิดข้อผิดพลาด";
+    });
+  });
+    </script>
+<!-- Teacher Modal -->
+</div>
+<span class="text-white text-sm hidden sm:inline-block" id="userDisplay">
+    👋 ยินดีต้อนรับ
+   </span>
+</header>
+
+<!-- 🔔 Top Alert (login required) -->
+<div id="topAlert" class="w-full bg-yellow-100 text-red-600 text-sm md:text-base px-4 py-2 text-center font-mitr">
+❌ ยังไม่ได้ลงทะเบียน/เข้าสู่ระบบ — โปรดเข้าสู่ระบบก่อนจึงจะใช้งานปุ่มและเมนูได้
+</div>
+
+<!-- Main Section -->
+<main class="max-w-6xl mx-auto bg-white bg-opacity-90 mt-10 p-6 rounded-xl shadow-lg">
+<div class="flex flex-col items-center justify-center text-center py-10">
+<img alt="iCARE+ logo" class="mx-auto my-4 h-20 sm:h-24 md:h-28 lg:h-32" src="https://img2.pic.in.th/pic/loICARE08d2635f15818a2a.png"/>
+<h2 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-purple-800 mb-4 font-exo2">
+     Latbualuang iCARE+
+    </h2>
+<h3 class="text-lg sm:text-xl text-blue-600 mb-2 font-mitr">
+     โรงเรียนใส่ใจ ปลอดภัยด้วยปัญญาประดิษฐ์
+    </h3>
+<p class="text-sm text-purple-600 mb-2 font-mitr">โครงการโดย รองฯ ภัทรมณฑน์ ปานมอญ</p>
+</div>
+<!-- Info Section -->
+<div class="flex flex-col lg:flex-row items-center justify-between mt-10 space-y-6 lg:space-y-0 lg:space-x-10">
+<img alt="ภาพประกอบ" class="w-full max-w-md rounded-lg shadow-md" src="https://img5.pic.in.th/file/secure-sv1/L.P.W.-v.33ec1544647496647.png"/>
+<div class="text-center lg:text-left">
+<h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-blue-700 mb-1 font-mitr">
+      Latbualuang iCARE+
+     </h2>
+<h3 class="text-sm sm:text-base md:text-lg text-pink-500 mb-4 font-mitr">
+      ความใส่ใจที่จับต้องได้ ด้วยเทคโนโลยีและหัวใจมนุษย์
+     </h3>
+<p class="text-base text-gray-700 mb-6">
+      เป็นระบบนวัตกรรมที่ออกแบบมาเพื่อดูแลและช่วยเหลือนักเรียน ครู และบุคลากรของโรงเรียนลาดบัวหลวงไพโรจน์วิทยา โดยเน้นการดูแลสุขภาพกาย สุขภาพจิต ความปลอดภัย และการให้คำปรึกษาด้วยเทคโนโลยี AI ที่ทันสมัย ผสานความเอาใจใส่และความรักจากโรงเรียน เพื่อสร้างสังคมการเรียนรู้ที่ปลอดภัยและอบอุ่น
+     </p>
+<div class="space-y-3">
+<button class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg text-lg font-mitr" onclick="openModal('emergencyModal')">
+       🚨🆘 แจ้งเหตุฉุกเฉิน🚨
+      </button>
+<button class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-lg font-mitr" onclick="document.getElementById('icareListenModal').classList.remove('hidden')">
+       📞 iCARE พร้อมฟังเสมอ
+      </button><hr>
+<a href="emo.html"><button class="w-full bg-blue-400 hover:bg-blue-500 text-white py-2 rounded-lg text-lg font-mitr">😊 แบบประเมินความรู้สึก</button></a>
+</div>
+</div>
+</div>
+<!-- Quote -->
+<div class="text-center mt-10">
+<p class="text-md text-purple-600 italic">
+<span class="font-mitr">
+      "เมื่อ AI จับสัญญาณได้เร็ว ครูจึงกอดได้ทันเวลา เพราะแค่
+      <strong>
+       'รู้ทัน'
+      </strong>
+      ยังไม่พอ... เราต้อง
+      <strong>
+       'เข้าถึง'
+      </strong>
+      ให้เร็วกว่าเดิม"
+     </span>
+</p>
+</div>
+</main>
+<!DOCTYPE html>
+
+<html lang="th">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>
+     บริการของเรา - Latbualuang iCARE+
+    </title>
+<script src="https://cdn.tailwindcss.com">
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Mitr&amp;display=swap" rel="stylesheet"/>
+<style>
+     .font-mitr { font-family: "Mitr", sans-serif; }
+    </style>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2&amp;display=swap" rel="stylesheet"/>
+<style>
+     .font-exo2 { font-family: "Exo 2", sans-serif; }
+    </style>
+<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/th.js">
+</script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+<!-- Section: Our Services -->
+<section class="bg-white py-12 px-4 font-mitr">
+<div class="max-w-7xl mx-auto">
+<h2 class="text-2xl sm:text-3xl font-bold text-center text-purple-700 mb-10 text-lg sm:text-xl md:text-2xl">
+       ✨ บริการของเรา ✨
+      </h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+<!-- Risk & Alert Map -->
+<div class="bg-white rounded-xl shadow-md p-6 border border-red-100 text-center">
+<div class="text-4xl mb-2">
+         📍
+        </div>
+<h3 class="text-lg font-semibold mb-1 text-base sm:text-lg md:text-xl">
+         แผนที่จุดเสี่ยงและจุดเฝ้าระวัง
+        </h3>
+<p class="text-sm text-gray-600 mb-4">
+         Ladbualuang iCARE+ Risk &amp; Alert Map
+        </p>
+<a class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full text-sm font-mitr" href="#" onclick="document.getElementById('riskMapModal').style.display='flex'">
+         ดูแผนที่
+        </a>
+</div>
+<!-- Join iCARE+ -->
+<div class="bg-white rounded-xl shadow-md p-6 border border-blue-100 text-center">
+<div class="text-4xl mb-2">
+         📲
+        </div>
+<h3 class="text-lg font-semibold mb-1 text-base sm:text-lg md:text-xl">
+         เข้าร่วม iCARE+
+        </h3>
+<p class="text-sm text-gray-600 mb-4">
+         เข้าร่วมโครงการเพื่อรับการดูแลและช่วยเหลือ
+        </p>
+<a class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-mitr" href="#">
+         เข้าร่วมโครงการ
+        </a>
+</div>
+<!-- CARE Watch -->
+<div class="bg-white rounded-xl shadow-md p-6 border border-green-100 text-center">
+<div class="text-4xl mb-2">
+         👥
+        </div>
+<h3 class="text-lg font-semibold mb-1 text-base sm:text-lg md:text-xl">
+         สมัคร CARE Watch รุ่นจิ๋ว
+        </h3>
+<p class="text-sm text-gray-600 mb-4">
+         ทีมเพื่อนแท้ เคียงข้างทุกโมเมนต์แบบเข้าใจ
+        </p>
+<a class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm font-mitr" href="#">
+         สมัครเข้าร่วม
+        </a>
+</div>
+<!-- iCARE Stories -->
+<div class="bg-white rounded-xl shadow-md p-6 border border-purple-100 text-center">
+<div class="text-4xl mb-2">
+         🎥💙
+        </div>
+<h3 class="text-lg font-semibold mb-1 text-base sm:text-lg md:text-xl">
+         iCARE Stories 🤖❤️
+        </h3>
+<p class="text-sm text-gray-600 mb-4">
+         เรื่องราวของการดูแลด้วยใจ
+        </p>
+<a class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-mitr" href="#">
+         ดูเรื่องราว
+        </a>
+</div>
+<!-- Partnership -->
+<div class="bg-white rounded-xl shadow-md p-6 border border-yellow-100 text-center">
+<div class="text-4xl mb-2">
+         🔍
+        </div>
+<h3 class="text-lg font-semibold mb-1 text-base sm:text-lg md:text-xl">
+         ความร่วมมือ
+        </h3>
+<p class="text-sm text-gray-600 mb-4">
+         พันธมิตรและความร่วมมือในโครงการ
+        </p>
+<a class="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-full text-sm font-mitr" href="#">
+         ดูรายละเอียด
+        </a>
+</div>
+<!-- Safety & Ethics -->
+<div class="bg-white rounded-xl shadow-md p-6 border border-blue-200 text-center">
+<div class="text-4xl mb-2">
+         🔐
+        </div>
+<h3 class="text-lg font-semibold mb-1 text-base sm:text-lg md:text-xl">
+         ความปลอดภัยและจริยธรรม
+        </h3>
+<p class="text-sm text-gray-600 mb-4">
+         นโยบายความปลอดภัยและจริยธรรมของระบบ
+        </p>
+<a onclick="openPolicyModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm font-mitr" href="#">
+         อ่านนโยบาย
+        </a>
+</div>
+<!-- Documents -->
+<div class="bg-white rounded-xl shadow-md p-6 border border-pink-100 text-center">
+<div class="text-4xl mb-2">
+         🧾
+        </div>
+<h3 class="text-lg font-semibold mb-1 text-base sm:text-lg md:text-xl">
+         ดาวน์โหลดเอกสารแนะนำ
+        </h3>
+<p class="text-sm text-gray-600 mb-4">
+         คู่มือและเอกสารสำหรับการใช้งานระบบ
+        </p>
+<a class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full text-sm font-mitr" href="#">
+         ดาวน์โหลด
+        </a>
+</div>
+<!-- Admin Back Office -->
+<div class="bg-white rounded-xl shadow-md p-6 border border-gray-200 text-center">
+<div class="text-4xl mb-2">
+         🗂️
+        </div>
+<h3 class="text-lg font-semibold mb-1 text-base sm:text-lg md:text-xl">
+         ระบบหลังบ้าน
+        </h3>
+<p class="text-sm text-gray-600 mb-4">
+         Back-office Dashboard สำหรับผู้ดูแลระบบ
+        </p>
+<a class="bg-gray-800 hover:bg-black text-white px-4 py-2 rounded-full text-sm font-mitr" href="file:///C:/Users/User/OneDrive/%E0%B8%A5.%E0%B8%9E.%E0%B8%A7.%202568/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%94%E0%B9%87%E0%B8%99%E0%B8%97%E0%B9%89%E0%B8%B2%E0%B8%97%E0%B8%B2%E0%B8%A2%20%E0%B9%81%E0%B8%81%E0%B9%89%E0%B9%84%E0%B8%82%E0%B9%80%E0%B8%A3%E0%B8%B7%E0%B9%88%E0%B8%AD%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%A1%E0%B9%88/web%20app/Latbualuang_iCARE+/iCARE_Hub_Dashboard.html">
+         เข้าสู่ระบบ
+        </a>
+</div>
+</div>
+</div>
+</section>
+<script>
+     function togglePassword(id) {
+  const input = document.getElementById(id);
+  input.type = input.type === "password" ? "text" : "password";
+}
+    </script>
+<!-- 🚨 Emergency Report Modal (Step 1: UI only) -->
+<div class="fixed z-50 inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden p-4" id="emergencyModal">
+<div class="bg-red-100 rounded-2xl shadow-2xl w-full max-w-md relative overflow-y-auto max-h-screen p-6 font-mitr">
+<button class="absolute top-2 right-2 text-gray-600 hover:text-black" onclick="closeModal('emergencyModal')">
+       ✖
+      </button>
+<h2 class="text-xl sm:text-2xl font-bold text-red-600 mb-4 text-center">
+       🚨🆘 แจ้งเหตุฉุกเฉิน🚨
+      </h2>
+<p class="text-sm text-blue-700 mt-2 mb-2 font-mitr" id="reporterName">
+ 👤 แจ้งโดย: (ระบบกำลังโหลดชื่อผู้แจ้ง...)
+</p>
+<input id="ReportedBy" name="ReportedBy" type="hidden"/>
+<form action="https://script.google.com/macros/s/AKfycbxLWBNIqSfa_88ONWAlsK-gNBLQZBVTOT4za3xWFANrZ-_6ZQgmtLD4VB4NlXo2Y6ZD/exec" class="space-y-3" enctype="multipart/form-data" id="emergencyForm" method="POST">
+<!-- Displayed student info (to be filled in dynamically after login) -->
+<!-- Emergency Type Dropdown -->
+<div>
+<label class="block text-sm">
+         ประเภทเหตุฉุกเฉิน:
+        </label>
+<select class="w-full px-3 py-2 rounded border text-black bg-white" id="emergencyType" name="EmergencyType" onchange="this.style.color='#000';" style="color:#60A5FA;">
+<option disabled="" selected="" value="">
+          -- เลือกประเภทเหตุ --
+         </option>
+<optgroup label="🔴 พฤติกรรมเสี่ยงและอันตราย" style="background-color:#fecaca;">
+<option style="background-color:#fee2e2;">
+           💥 พบนักเรียนมีแนวโน้มทำร้ายตัวเอง
+          </option>
+<option style="background-color:#fee2e2;">
+           👊 ทะเลาะวิวาท / ทำร้ายร่างกายกัน
+          </option>
+<option style="background-color:#fee2e2;">
+           😢 ถูกรังแก / บูลลี่ (Bullying)
+          </option>
+<option style="background-color:#fee2e2;">
+           🚬 พบสารเสพติด / แอลกอฮอล์ / สูบบุหรี่
+          </option>
+<option style="background-color:#fee2e2;">
+           📵 ปัญหาการกลั่นแกล้งทางออนไลน์
+          </option>
+</optgroup>
+<optgroup label="🟠 สุขภาพและสภาวะฉุกเฉิน" style="background-color:#fed7aa;">
+<option style="background-color:#ffedd5;">
+           🤢 ป่วยฉุกเฉิน / เป็นลม / คลื่นไส้ / หายใจไม่ออก
+          </option>
+<option style="background-color:#ffedd5;">
+           🧠 เครียดรุนแรง / วิตกกังวล / ภาวะทางอารมณ์
+          </option>
+<option style="background-color:#ffedd5;">
+           🩹 อุบัติเหตุ / บาดเจ็บจากกิจกรรม / ลื่นล้ม
+          </option>
+</optgroup>
+<optgroup label="🟡 ความปลอดภัยในสถานที่" style="background-color:#fef08a;">
+<option style="background-color:#fef9c3;">
+           🔥 ไฟไหม้ / กลิ่นไหม้ / ไฟฟ้าลัดวงจร
+          </option>
+<option style="background-color:#fef9c3;">
+           ⚠️ พบคนแปลกหน้า / ผู้บุกรุกในโรงเรียน
+          </option>
+<option style="background-color:#fef9c3;">
+           🧯 อุปกรณ์ / อาคารเรียน / สนามเด็กเล่นชำรุด
+          </option>
+<option style="background-color:#fef9c3;">
+           🚶‍♂️ นักเรียนหายตัว / เดินออกจากพื้นที่เรียน
+          </option>
+</optgroup>
+<optgroup label="🟢 หมวดอื่น ๆ" style="background-color:#bbf7d0;">
+<option style="background-color:#dcfce7;" value="อื่น ๆ (ระบุเพิ่มเติม)">
+           💬 อื่น ๆ (ระบุเพิ่มเติม)
+          </option>
+</optgroup>
+</select>
+<input class="mt-2 w-full px-3 py-2 rounded border text-black hidden" id="otherEmergencyInput" name="OtherEmergencyDetail" placeholder="โปรดระบุเพิ่มเติม..." type="text"/>
+</div>
+<!-- Location -->
+<div>
+<label class="block text-sm">
+         สถานที่เกิดเหตุ:
+        </label>
+<input class="w-full px-3 py-2 rounded border text-black" name="Location" required="" type="text"/>
+</div>
+<!-- File Uploads -->
+<div>
+<label class="block text-sm text-black">
+       แนบรูปภาพ (ไม่บังคับ):
+      </label>
+      <input class="w-full px-3 py-2 rounded border text-black" type="file" name="imageFile" accept="image/*"/>
+<label class="block text-sm mt-2 text-black" style="color:#000 !important;">
+       แนบคลิปเสียง (ไม่บังคับ):
+      </label>
+      <input class="w-full px-3 py-2 rounded border text-black" type="file" name="audioFile" accept="audio/*"/>
+<label class="block text-sm mt-2 text-black" style="color:#000 !important;">
+       แนบคลิปวิดีโอ (ไม่บังคับ):
+      </label>
+      <input class="w-full px-3 py-2 rounded border text-black" type="file" name="videoFile" accept="video/*"/>
+<p class="text-xs text-gray-600 mt-1">
+       ขนาดรวมไม่เกิน 5MB
+      </p>
+</div>
+<!-- Confirmation -->
+<label class="inline-flex items-start text-sm text-gray-700">
+<input class="mr-2 mt-1" required="" type="checkbox"/ name="Confirm">
+        ข้าพเจ้าขอรับรองว่า ข้อมูลที่กรอกเป็นข้อเท็จจริงทุกประการ
+       </label>
+<p class="text-xs text-red-500 italic">
+        🔒 ข้อมูลจะถูกเก็บเป็นความลับ และส่งถึงครูผู้รับผิดชอบเพื่อดำเนินการช่วยเหลือโดยไม่เปิดเผยต่อผู้อื่น
+       </p>
+<!-- Submit -->
+<div class="text-center pt-2">
+<button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded" type="submit">
+         ยืนยันการแจ้งเหตุ
+        </button>
+<p class="text-sm mt-2" id="emergencyStatus">
+</p>
+</div>
+</form>
+</div>
+</div>
+<script>
+     function toggleOtherInput(value) {
+  const input = document.getElementById("otherEmergencyInput");
+  input.classList.toggle("hidden", value !== "อื่น ๆ (ระบุเพิ่มเติม)");
+}
+    </script>
+<!-- ✅ New Login Modal -->
+<div class="fixed z-50 inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden" id="loginModal">
+<div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm relative font-mitr">
+<button class="absolute top-2 right-2 text-gray-600 hover:text-black" onclick="document.getElementById('loginModal').classList.add('hidden')">
+       ✖
+      </button>
+<h2 class="text-xl font-bold mb-4 text-yellow-600">
+       🔐 เข้าสู่ระบบ
+      </h2>
+<form class="space-y-3" id="loginForm">
+<input class="w-full px-3 py-2 rounded border" name="Username" placeholder="ชื่อผู้ใช้" required="" type="text"/>
+<input class="w-full px-3 py-2 rounded border" name="Password" placeholder="รหัสผ่าน" required="" type="password"/>
+<button class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded" type="submit">
+        เข้าสู่ระบบ
+       </button>
+<p class="text-center text-sm mt-2 text-red-600" id="loginStatus">
+</p>
+</form>
+</div>
+</div>
+<!-- ✅ Login Script -->
+<script>
+     const loginScriptURL = "https://script.google.com/macros/s/AKfycbw7X3QPSj76DJR9eelvRI73MGZIltO_WX1g2OdQ5RIAhfxs_6ecBwJZa6V_qImLctIHuA/exec";
+
+  document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const username = this.Username.value.trim();
+    const password = this.Password.value.trim();
+    const formData = new FormData();
+    formData.append("Username", username);
+    formData.append("username", username);
+    formData.append("Password", password);
+    formData.append("password", password);
+    formData.append("IP_Address", "Auto");
+    formData.append("ip", "Auto");
+    formData.append("Device", navigator.userAgent);
+    formData.append("device", navigator.userAgent);
+
+    fetch(loginScriptURL, {
+      method: "POST",
+      body: formData,
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      const ok = data && (data.success === true || data.status === 'success');
+      if (ok) {
+        sessionStorage.setItem("userData", JSON.stringify(data));
+        document.getElementById("loginStatus").textContent = "✅ 🔐 เข้าสู่ระบบสำเร็จ";
+        document.getElementById("loginModal").classList.add("hidden");
+        enableProtectedFeatures(); if(window.onLoginSuccess){ try{ window.onLoginSuccess(); }catch(_){} }
+alert(`ยินดีต้อนรับ ${data.Prefix}${data.FirstName} ${data.LastName}`);
+      } else {
+        document.getElementById("loginStatus").textContent = "❌ " + data.message;
+      }
+    })
+    .catch((err) => {
+      document.getElementById("loginStatus").textContent = "❌ ข้อผิดพลาด: " + err.message;
+    });
+  });
+
+  function enableProtectedFeatures() {
+    const protectedButtons = document.querySelectorAll(".protected-button, .protected-form");
+    protectedButtons.forEach(btn => {
+      btn.disabled = false;
+      btn.classList.remove("opacity-50", "pointer-events-none");
+    });
+  }
+
+  window.onload = function () {
+    const user = sessionStorage.getItem("userData");
+    if (!user) {
+      const protectedButtons = document.querySelectorAll(".protected-button, .protected-form");
+      protectedButtons.forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add("opacity-50", "pointer-events-none");
+      });
+    } else {
+      enableProtectedFeatures(); if(window.onLoginSuccess){ try{ window.onLoginSuccess(); }catch(_){} }
+}
+  };
+    </script>
+<script>
+     document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("select option").forEach(opt => {
+    const text = opt.textContent.trim();
+    if (["เด็กชาย", "เด็กหญิง", "นาย", "นางสาว", "-- คำนำหน้า --"].includes(text)) {
+      opt.style.color = "#60A5FA";
+    }
+  });
+});
+    </script>
+<script>
+     document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("select option").forEach(opt => {
+    const text = opt.textContent.trim();
+    if (text) {
+      opt.style.color = "#60A5FA";
+    }
+  });
+});
+    </script>
+<script>
+     document.addEventListener("DOMContentLoaded", function () {
+  const placeholders = ["คำนำหน้า", "ระดับชั้น", "ห้องเรียน", "วว/ดด/ปปปป"];
+  document.querySelectorAll("input[placeholder], select[placeholder]").forEach(el => {
+    if (placeholders.includes(el.placeholder.trim())) {
+      el.style.color = "#60A5FA";
+    }
+  });
+});
+    </script>
+<script>
+     document.addEventListener("DOMContentLoaded", function () {
+  const targets = ["-- คำนำหน้า --", "-- ระดับชั้น --", "-- ห้องเรียน --", "วว/ดด/ปปปป"];
+
+  // Set color for placeholder-like options in select dropdowns
+  document.querySelectorAll("select option").forEach(option => {
+    if (targets.includes(option.textContent.trim())) {
+      option.style.color = "#60A5FA";
+    }
+  });
+
+  // Set color for placeholder in input fields
+  document.querySelectorAll("input[placeholder]").forEach(input => {
+    if (targets.includes(input.placeholder.trim())) {
+      input.style.color = "#60A5FA";
+    }
+  });
+});
+    </script>
+<script>
+     document.addEventListener("DOMContentLoaded", function () {
+  const blueOptions = ["-- คำนำหน้า --", "-- ระดับชั้น --", "-- ห้องเรียน --", "วว/ดด/ปปปป"];
+  document.querySelectorAll("select option").forEach(opt => {
+    if (blueOptions.includes(opt.textContent.trim())) {
+      opt.style.color = "#60A5FA";
+    }
+  });
+});
+    </script>
+<script>
+     flatpickr("#birthdate", {
+    dateFormat: "d/m/Y",
+    locale: "th",
+    allowInput: true
+  });
+    </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const photoInput = document.getElementById("TeacherPhoto");
+  const statusDiv = document.getElementById("teacherFormMessage");
+
+  if (photoInput) {
+    photoInput.addEventListener("change", function () {
+      const file = this.files[0];
+      if (file && file.size > 1024 * 1024) {
+        statusDiv.textContent = "❌ ขนาดไฟล์ต้องไม่เกิน 1MB";
+        statusDiv.className = "text-red-600";
+        this.value = ""; // ล้างค่า
+      } else {
+        statusDiv.textContent = "";
+        statusDiv.className = "";
+      }
+    });
+  }
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const user = JSON.parse(sessionStorage.getItem("userData") || "{}");
+
+  const fullName = `${user.Prefix || ""}${user.FirstName || ""} ${user.LastName || ""}`.trim();
+  const classroom = user.Class && user.Room ? ` ม.${user.Class}/${user.Room}` : "";
+  const displayName = fullName + classroom;
+
+  // แสดงชื่อใน UI
+  const display = document.getElementById("reporterName");
+  if (display) {
+    display.textContent = "👤 แจ้งโดย: " + displayName;
+  }
+
+  // ใส่ค่า hidden input สำหรับส่งไปใน Google Sheet
+  const input = document.getElementById("ReportedBy");
+  if (input) {
+    input.value = displayName;
+  }
+});
+</script>
+
+<!-- 📞 iCARE พร้อมฟังเสมอ Modal -->
+<div class="fixed z-50 inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden p-4" id="icareListenModal">
+<div class="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 font-mitr relative">
+<button class="absolute top-2 right-2 text-gray-600 hover:text-black" onclick="document.getElementById('icareListenModal').classList.add('hidden')">✖</button>
+<h2 class="text-2xl font-bold text-center mb-4 text-green-600">📞 iCARE พร้อมฟังเสมอ</h2>
+<form class="space-y-4" id="icareListenForm">
+<div>
+<label class="block text-sm font-mitr" for="icareReason" style="color:#60D9A3;">โปรดเลือกสิ่งที่คุณต้องการ:</label>
+<select class="w-full px-3 py-2 rounded border text-black bg-white font-mitr" id="icareReason" name="icareReason" onchange="this.style.color='#000';" required="" style="color:#60D9A3;">
+<option disabled="" selected="" value="">-- กรุณาเลือกเหตุผล --</option>
+<option>😊 อยากเล่าเรื่องบางอย่างให้ใครสักคนฟัง (ไม่ตัดสิน ไม่ต้องแก้ แค่ฟังก็พอแล้ว)</option>
+<option>👩‍🏫 อยากให้ครูประจำชั้นรับรู้เรื่องนี้</option>
+<option>📞 อยากให้ครูหรือผู้ดูแลติดต่อกลับ (ระบุชื่อคนที่ไว้ใจได้เลย เดี๋ยวเราช่วยติดต่อให้)</option>
+<option>🤝 อยากพูดคุยกับเพื่อนที่ไว้ใจและพร้อมรับฟัง (คุยกับคนที่เข้าใจเราบ้าง ก็น่าจะช่วยได้เนอะ)</option>
+<option>👨‍💼 อยากให้ครูหรือผู้บริหารที่ไว้วางใจรับรู้และดูแล (บอกชื่อไว้ได้เลย เดี๋ยวเราช่วยส่งต่อ)</option>
+<option>✍️ อื่น ๆ ที่อยากบอกเพิ่มเติม (พิมพ์ไว้ได้เลย ไม่ต้องเก็บไว้คนเดียว)</option>
+</select>
+</div>
+<div>
+<label class="block text-sm text-gray-700 font-mitr" for="icareDetails">✍️ รายละเอียดเพิ่มเติม (ถ้ามี):</label>
+<textarea class="w-full px-3 py-2 rounded border text-black font-mitr min-h-[150px]" id="icareDetails" name="icareDetails" placeholder="" rows="6" style="resize: none;" required=""></textarea>
+</div>
+<p class="text-sm text-gray-600 mt-2 font-mitr">🔐 ข้อมูลทั้งหมดจะถูกเก็บเป็นความลับและใช้เพื่อดูแลอย่างปลอดภัยเท่านั้น</p>
+<p class="text-sm text-green-600 italic font-mitr">🙏 ขอบคุณที่กล้าเปิดใจ 💛 ไม่จำเป็นต้องเผชิญปัญหาเพียงลำพัง มีคนพร้อมฟังและช่วยเหลือเสมอ</p>
+<div class="text-center">
+<button class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded font-mitr" style="width: auto;" type="submit">บันทึกข้อมูล</button>
+<p class="text-sm mt-2 font-mitr" id="icareListenStatus"></p>
+</div>
+</form>
+</div>
+</div>
+<script>
+  
+document.getElementById("icareListenForm")?.addEventListener("submit", async function (e) {
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  const status = document.getElementById("icareListenStatus");
+  status.textContent = "";
+  status.className = "text-sm font-mitr mt-2";
+
+  // prevent double submit
+  if (this.dataset.submitting === "1") { return; }
+  this.dataset.submitting = "1";
+  const submitBtn = this.querySelector('[type="submit"]');
+  if (submitBtn) submitBtn.disabled = True;
+
+  try {
+    // validate required fields
+    const reasonEl = document.getElementById("icareReason");
+    const detailsEl = document.getElementById("icareDetails");
+    const reason = (reasonEl?.value || "").trim();
+    const details = (detailsEl?.value || "").trim();
+    if (!reason) {
+      status.textContent = "❌ กรุณาเลือกสิ่งที่คุณต้องการ";
+      status.classList.add("text-red-600");
+      return;
+    }
+    if (!details) {
+      status.textContent = "❌ กรุณากรอกรายละเอียดเพิ่มเติม";
+      status.classList.add("text-red-600");
+      return;
+    }
+
+    // must be logged in
+    let session = null;
+    try { session = JSON.parse(sessionStorage.getItem("userData") || "null"); } catch(_) {}
+    if (!session) {
+      status.textContent = "❌ กรุณาเข้าสู่ระบบก่อนบันทึกข้อมูล";
+      status.classList.add("text-red-600");
+      return;
+    }
+    const usr = session && session.data ? session.data : session;
+    const username = usr && (usr.Username || usr.username);
+    if (!username) {
+      status.textContent = "❌ ไม่พบข้อมูลผู้ใช้ กรุณาล็อกอินใหม่";
+      status.classList.add("text-red-600");
+      return;
+    }
+
+    // build payload
+    const fd = new FormData();
+    fd.append("Action", "ListenSubmit");
+    fd.append("Source", "ListenForm");
+    fd.append("IP_Address", "Auto");
+    fd.append("Device", navigator.userAgent);
+    fd.append("Username", username);
+    // try include student context if available
+    const ctx = {
+      StudentID: usr.StudentID,
+      Prefix_Student: usr.Prefix_Student || usr.Prefix,
+      FirstName_Student: usr.FirstName_Student || usr.FirstName,
+      LastName_Student: usr.LastName_Student || usr.LastName,
+      Class: usr.Class, Room: usr.Room, StudentPhone: usr.StudentPhone || usr.Phone
+    };
+    Object.keys(ctx).forEach(k => { if (ctx[k]) fd.append(k, String(ctx[k])); });
+
+    fd.append("ListenReason", reason);
+    fd.append("ListenDetails", details);
+
+    // endpoint
+    const listenURL = "https://script.google.com/macros/s/AKfycbzejn_sGgjDfOYU5nNtOV8hsgESSL0Pc7747Da5kGjwJXhiGzkse13WBliJY9iSy8GV/exec";
+
+    const res = await fetch(listenURL, { method: "POST", body: fd });
+    const text = await res.text().catch(()=>"");
+    if (res.ok) {
+      status.textContent = "✅ บันทึกข้อมูลสำเร็จ";
+      status.classList.add("text-green-600");
+      this.reset();
+      if (reasonEl) reasonEl.value = "";
+    } else {
+      status.textContent = "❌ บันทึกไม่สำเร็จ: " + (text || res.status);
+      status.classList.add("text-red-600");
+    }
+  } catch (err) {
+    // last attempt in no-cors (best-effort fire-and-forget)
+    try {
+      const listenURL = "https://script.google.com/macros/s/AKfycbzejn_sGgjDfOYU5nNtOV8hsgESSL0Pc7747Da5kGjwJXhiGzkse13WBliJY9iSy8GV/exec";
+      const fd2 = new FormData(this);
+      // ensure our fields are included again
+      const reasonVal = (document.getElementById("icareReason")?.value || "").trim();
+      const detailsVal = (document.getElementById("icareDetails")?.value || "").trim();
+      fd2.set("ListenReason", reasonVal);
+      fd2.set("ListenDetails", detailsVal);
+      await fetch(listenURL, { method: "POST", body: fd2, mode: "no-cors" });
+      status.textContent = "✅ บันทึกข้อมูลสำเร็จ";
+      status.classList.add("text-green-600");
+      this.reset();
+    } catch (err2) {
+      status.textContent = "❌ ไม่สามารถเชื่อมต่อได้: " + (err?.message || err);
+      status.classList.add("text-red-600");
+    }
+  } finally {
+    this.dataset.submitting = "0";
+    const submitBtn2 = this.querySelector('[type="submit"]');
+    if (submitBtn2) submitBtn2.disabled = false;
+  }
+});
+if (_totalBytes > 5 * 1024 * 1024) { statusEl.textContent="❌ ขนาดไฟล์แนบรวมเกิน 5MB"; statusEl.classList.add("text-red-600"); return; }
+
+    let session = null; try { session = JSON.parse(sessionStorage.getItem("userData") || "null"); } catch(_){}
+    if (!session) { statusEl.textContent = "❌ กรุณาเข้าสู่ระบบก่อนแจ้งเหตุ"; statusEl.classList.add("text-red-600"); return; }
+    const usr = session && session.data ? session.data : session;
+    const username = usr && (usr.Username || usr.username);
+    if (!username) { statusEl.textContent = "❌ ไม่พบข้อมูลผู้ใช้ กรุณาล็อกอินใหม่"; statusEl.classList.add("text-red-600"); return; }
+
+    const fd = new FormData(form);
+// --- Force fields for GAS ---
+fd.set("EmergencyType", typeVal);
+fd.set("Location", locVal);
+if (confirmBox && confirmBox.checked) fd.set("Confirm","1");
+// Map 'OtherEmergencyDetail' -> 'EmergencyOther'
+if (typeof otherInput !== "undefined" && otherInput) {
+  const otherVal = String(otherInput.value||"").trim();
+  if (otherVal) fd.set("EmergencyOther", otherVal);
+}
+    fd.append("Username", username);
+
+    let ctx = {
+      StudentID: usr.StudentID,
+      Prefix_Student: usr.Prefix_Student || usr.Prefix,
+      FirstName_Student: usr.FirstName_Student || usr.FirstName,
+      LastName_Student: usr.LastName_Student || usr.LastName,
+      Class: usr.Class, Room: usr.Room, StudentPhone: usr.StudentPhone || usr.Phone
+    };
+    if (!ctx.StudentID || !ctx.FirstName_Student || !ctx.LastName_Student) {
+      const looked = await lookupStudentContext(username);
+      if (looked) {
+        ctx.StudentID = ctx.StudentID || looked.StudentID || looked.studentId || "";
+        ctx.Prefix_Student = ctx.Prefix_Student || looked.Prefix_Student || looked.Prefix || "";
+        ctx.FirstName_Student = ctx.FirstName_Student || looked.FirstName_Student || looked.FirstName || "";
+        ctx.LastName_Student  = ctx.LastName_Student  || looked.LastName_Student  || looked.LastName  || "";
+        ctx.Class = ctx.Class || looked.Class || "";
+        ctx.Room  = ctx.Room  || looked.Room  || "";
+        ctx.StudentPhone = ctx.StudentPhone || looked.StudentPhone || looked.Phone || "";
+      }
+    }
+    Object.keys(ctx).forEach(k => { if (ctx[k]) fd.append(k, String(ctx[k])); });
+
+    fd.append("IP_Address","Auto"); fd.append("Device", navigator.userAgent); fd.append("Source","EmergencyForm");
+
+    const url = form.action || "https://script.google.com/macros/s/AKfycbxLWBNIqSfa_88ONWAlsK-gNBLQZBVTOT4za3xWFANrZ-_6ZQgmtLD4VB4NlXo2Y6ZD/exec";
+    try {
+      const res = await fetch(url, { method:"POST", body: fd });
+      const txt = await res.text().catch(()=> "");
+      if (res.ok) {
+        statusEl.textContent = "✅ ยืนยันการแจ้งเหตุสำเร็จ"; statusEl.classList.add("text-green-600");
+        if (typeSel) typeSel.value=""; if (locInput) locInput.value=""; if (otherInput) { otherInput.value=""; otherInput.classList.add("hidden"); } if (confirmBox) confirmBox.checked=false;
+      } else {
+        statusEl.textContent = "❌ บันทึกไม่สำเร็จ: " + (txt || res.status); statusEl.classList.add("text-red-600");
+      }
+    } catch (err) {
+      try {
+        await fetch(url, { method:"POST", body: fd, mode:"no-cors" });
+        statusEl.textContent = "✅ ยืนยันการแจ้งเหตุสำเร็จ";
+        statusEl.classList.add("text-green-600");
+        if (typeSel) typeSel.value="";
+        if (locInput) locInput.value="";
+        if (otherInput) { otherInput.value=""; otherInput.classList.add("hidden"); }
+        if (confirmBox) confirmBox.checked=false;
+      } catch (e2) {
+        statusEl.textContent = "❌ ไม่สามารถเชื่อมต่อได้: " + err.message;
+        statusEl.classList.add("text-red-600");
+      }
+    }
+  });
+})();
+</script>
+
+<script>window.loginScriptURL="https://script.google.com/macros/s/AKfycbytXOkLNA8p-uIJI53L0xGzkOu8f76VSf5pj5kdCH5y7llpgEIQ8zm9rqHoNaxyzi937A/exec";</script>
+
+<!-- Block file inputs for emergency form (show "กำลังพัฒนาระบบ") -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const inputs = Array.from(document.querySelectorAll(
+    '#emergencyForm input[type="file"][name="imageFile"],' +
+    '#emergencyForm input[type="file"][name="audioFile"],' +
+    '#emergencyForm input[type="file"][name="videoFile"]'
+  ));
+  function block(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    alert("กำลังพัฒนาระบบ");
+    return false;
+  }
+  inputs.forEach((inp) => {
+    // Prevent opening file dialog by intercepting multiple events
+    ["click","mousedown","focus","keydown","change","dragover","drop"].forEach(evt => {
+      inp.addEventListener(evt, block, true);
+    });
+    // Visual cue
+    inp.style.cursor = "not-allowed";
+    inp.title = "กำลังพัฒนาระบบ";
+    // Ensure value is cleared in case browser still sets it
+    inp.value = "";
+  });
+});
+</script>
+
+<script>
+
+(function(){
+  const form = document.getElementById("icareListenForm");
+  if (!form) return;
+
+  // Add hidden iframe fallback target
+  let iframe = document.getElementById("listenHiddenFrame");
+  if (!iframe) {
+    iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.id = "listenHiddenFrame";
+    document.body.appendChild(iframe);
+  }
+
+  const statusEl = document.getElementById("icareListenStatus");
+  const setStatus = (msg, ok)=>{
+    if (!statusEl) return;
+    statusEl.textContent = msg || "";
+    statusEl.classList.remove("text-red-600","text-green-600");
+    statusEl.classList.add(ok ? "text-green-600":"text-red-600");
+  };
+
+  function getValByPref(ids, names){
+    for (const id of (ids||[])) {
+      const el = document.getElementById(id);
+      if (el && typeof el.value !== "undefined") return String(el.value||"").trim();
+    }
+    for (const nm of (names||[])) {
+      const el = form.querySelector(`[name="${nm}"]`);
+      if (el && typeof el.value !== "undefined") return String(el.value||"").trim();
+    }
+    return "";
+  }
+
+  form.addEventListener("submit", async function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    setStatus("", true);
+
+    if (form.dataset.submitting === "1") return;
+    form.dataset.submitting = "1";
+    const submitBtn = form.querySelector('[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+      // Validate required fields in the form generically
+      const requiredEls = form.querySelectorAll("[required]");
+      for (const el of requiredEls) {
+        if (!el.value || String(el.value).trim() === "") {
+          setStatus("❌ กรุณากรอกข้อมูลให้ครบทุกช่อง", false);
+          if (submitBtn) submitBtn.disabled = false;
+          form.dataset.submitting = "0";
+          return;
+        }
+      }
+
+      // Session / login data
+      let sess = null;
+      try { sess = JSON.parse(sessionStorage.getItem("userData") || "null"); } catch(_){}
+      if (!sess) { try { sess = JSON.parse(localStorage.getItem("userData") || "null"); } catch(_){ } }
+      if (!sess) { try { sess = JSON.parse(localStorage.getItem("studentData") || "null"); } catch(_){ } }
+
+      const user = (sess && sess.data) ? sess.data : sess;
+      const username = user && (user.Username || user.username);
+      if (!username) {
+        setStatus("❌ กรุณาเข้าสู่ระบบก่อนบันทึกข้อมูล", false);
+        if (submitBtn) submitBtn.disabled = false;
+        form.dataset.submitting = "0";
+        return;
+      }
+
+      // Gather values (support multiple DOM names/ids)
+      const reason  = getValByPref(["icareReason"], ["ListenReason","reason"]);
+      const details = getValByPref(["icareDetails"],["ListenDetails","details"]);
+      if (!reason)  { setStatus("❌ กรุณาเลือกสิ่งที่คุณต้องการ", false);  submitBtn && (submitBtn.disabled=false); form.dataset.submitting="0"; return; }
+      if (!details) { setStatus("❌ กรุณากรอกรายละเอียดเพิ่มเติม", false); submitBtn && (submitBtn.disabled=false); form.dataset.submitting="0"; return; }
+
+      // Build payload
+      const fd = new FormData();
+      const rid = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2));
+      fd.append("RequestID", rid);
+      fd.append("Username", username);
+      fd.append("ListenReason", reason);
+      fd.append("ListenDetails", details);
+      fd.append("Source", "ListenForm");
+      fd.append("IP_Address", "Auto");
+      fd.append("Device", navigator.userAgent);
+
+      // pass student context if present
+      const ctx = {
+        StudentID: user && user.StudentID,
+        Prefix_Student: (user && (user.Prefix_Student || user.Prefix)),
+        FirstName_Student: (user && (user.FirstName_Student || user.FirstName)),
+        LastName_Student:  (user && (user.LastName_Student  || user.LastName)),
+        Class: user && user.Class,
+        Room:  user && user.Room,
+        StudentPhone: user && (user.StudentPhone || user.Phone)
+      };
+      Object.keys(ctx).forEach(k => { if (ctx[k]) fd.append(k, String(ctx[k])); });
+
+      const ENDPOINT = "https://script.google.com/macros/s/AKfycbzejn_sGgjDfOYU5nNtOV8hsgESSL0Pc7747Da5kGjwJXhiGzkse13WBliJY9iSy8GV/exec";
+
+      // Try normal fetch first
+      let ok = false, txt = "";
+      try {
+        const resp = await fetch(ENDPOINT, { method: "POST", body: fd });
+        txt = await resp.text().catch(()=> "");
+        ok = resp.ok || (txt && /✅/.test(txt));
+      } catch (err) {
+        // ignore, will fallback
+      }
+
+      if (!ok) {
+        // Hidden iframe fallback (classic HTML POST) to beat CORS/network oddities
+        const tempForm = document.createElement("form");
+        tempForm.action = ENDPOINT;
+        tempForm.method = "POST";
+        tempForm.enctype = "multipart/form-data";
+        tempForm.target = "listenHiddenFrame";
+        tempForm.style.display = "none";
+
+        const add = (k,v)=>{
+          const inp = document.createElement("input");
+          inp.type = "hidden"; inp.name = k; inp.value = v;
+          tempForm.appendChild(inp);
+        };
+        add("RequestID", rid);
+        add("Username", username);
+        add("ListenReason", reason);
+        add("ListenDetails", details);
+        add("Source", "ListenForm");
+        add("IP_Address", "Auto");
+        add("Device", navigator.userAgent);
+        Object.keys(ctx).forEach(k => { if (ctx[k]) add(k, String(ctx[k])); });
+
+        document.body.appendChild(tempForm);
+        tempForm.submit();
+        setTimeout(()=> { document.body.removeChild(tempForm); }, 2000);
+        ok = true; // will rely on GAS idempotency
+      }
+
+      if (ok) {
+        setStatus("✅ บันทึกข้อมูลสำเร็จ", true);
+        form.reset();
+      } else {
+        setStatus("❌ บันทึกไม่สำเร็จ " + (txt ? (": " + txt) : ""), false);
+      }
+
+    } catch (err) {
+      setStatus("❌ ขัดข้อง: " + (err && err.message ? err.message : err), false);
+    } finally {
+      form.dataset.submitting = "0";
+      const submitBtn2 = form.querySelector('[type="submit"]');
+      if (submitBtn2) submitBtn2.disabled = false;
+    }
+  });
+})();
+
+</script>
+
+<!-- 🔐 Floating Login Button -->
+<button id="floatingLoginBtn" title="เข้าสู่ระบบ" onclick="document.getElementById('loginModal')?.classList.remove('hidden')"
+style="position:fixed; right:16px; bottom:16px; z-index:9999; background:#1d4ed8; color:#fff; border:none; border-radius:9999px; padding:12px 16px; box-shadow:0 10px 20px rgba(0,0,0,.15); font-family:'Mitr',sans-serif;">
+🔐 เข้าสู่ระบบ
+</button>
+
+
+<!-- 🔐 Safety & Ethics Policy Modal -->
+<div id="policyModal" class="fixed inset-0 z-[9998] hidden items-center justify-center bg-black bg-opacity-40 p-4">
+  <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl p-6 font-mitr"
+       style="background: linear-gradient(135deg,#e0f2fe, #fde7f3, #fff7d6);
+              border: 2px solid transparent;
+              border-image: linear-gradient(135deg,#60a5fa,#f59e0b,#ec4899) 1;
+              box-shadow: 0 20px 40px rgba(0,0,0,.2);">
+    <button aria-label="close" onclick="document.getElementById('policyModal').classList.add('hidden')"
+            class="absolute top-3 right-3 text-gray-700 hover:text-black text-xl">❌</button>
+
+    <h2 class="text-center text-blue-700 text-2xl md:text-3xl font-bold mb-2">🔐 ความปลอดภัยและจริยธรรม</h2>
+    <p class="text-center text-blue-700 text-base md:text-lg mb-4">นโยบายความปลอดภัยและจริยธรรมของระบบ</p>
+
+    <div class="space-y-4 text-gray-800">
+      <div>
+        <h3 class="font-semibold text-blue-700 mb-1">📜 1. วัตถุประสงค์</h3>
+        <ul class="list-disc pl-6">
+          <li>เพื่อกำหนดแนวทางการใช้ระบบ Latbualuang iCARE+ อย่างปลอดภัย โปร่งใส และมีจริยธรรม</li>
+          <li>เพื่อคุ้มครองสิทธิ ความเป็นส่วนตัว และข้อมูลส่วนบุคคลของนักเรียน ครู ผู้ปกครอง และบุคลากรที่เกี่ยวข้อง</li>
+          <li>เพื่อสร้างมาตรฐานด้านคุณธรรมและความรับผิดชอบต่อสังคมในกระบวนการบริหารจัดการข้อมูล</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-blue-700 mb-1">📦 2. ขอบเขตการบังคับใช้</h3>
+        <ul class="list-disc pl-6">
+          <li>ครอบคลุมผู้ใช้งานทุกกลุ่ม ได้แก่ ผู้บริหาร ครู นักเรียน ผู้ปกครอง และเจ้าหน้าที่ที่เกี่ยวข้อง</li>
+          <li>ครอบคลุมการใช้งานระบบทุกฟังก์ชัน เช่น การลงทะเบียน, การเข้าสู่ระบบ, การรายงานเหตุฉุกเฉิน, การประเมินอารมณ์/ความรู้สึก, การเก็บข้อมูล, และการสื่อสาร</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-blue-700 mb-1">🛡️ 3. หลักการด้านความปลอดภัย (Security Principles)</h3>
+        <ul class="list-disc pl-6">
+          <li><strong>การคุ้มครองข้อมูลส่วนบุคคล</strong>: ปฏิบัติตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล (PDPA) และกฎหมายที่เกี่ยวข้อง / ใช้ข้อมูลตามวัตถุประสงค์ที่แจ้งไว้เท่านั้น</li>
+          <li><strong>การควบคุมการเข้าถึง (Access Control)</strong>: ผู้ใช้งานต้องเข้าสู่ระบบด้วยบัญชีที่ได้รับอนุญาต / กำหนดสิทธิ์ตามบทบาท</li>
+          <li><strong>ความปลอดภัยของระบบและเครือข่าย</strong>: ใช้มาตรการเข้ารหัส (Encryption) และป้องกันการเข้าถึงโดยไม่ได้รับอนุญาต</li>
+          <li><strong>การเก็บรักษาและสำรองข้อมูล</strong>: จัดเก็บบนระบบที่ปลอดภัย สำรองข้อมูลตามรอบ และลบข้อมูลเมื่อหมดอายุ</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-blue-700 mb-1">🤝 4. หลักการด้านจริยธรรม (Ethical Principles)</h3>
+        <ul class="list-disc pl-6">
+          <li><strong>ความซื่อสัตย์และโปร่งใส</strong>: ใช้ข้อมูลและระบบด้วยความซื่อสัตย์ / เปิดเผยข้อมูลอย่างโปร่งใส</li>
+          <li><strong>การเคารพสิทธิและศักดิ์ศรีความเป็นมนุษย์</strong>: ห้ามใช้ข้อมูลเพื่อการกลั่นแกล้ง การเลือกปฏิบัติ หรือการละเมิดสิทธิส่วนบุคคล</li>
+          <li><strong>การรับผิดชอบต่อผลกระทบ</strong>: พบการใช้ผิดวัตถุประสงค์ต้องรายงาน และผู้รับผิดชอบต้องตรวจสอบแก้ไข</li>
+          <li><strong>การใช้ AI อย่างมีจริยธรรม</strong>: ใช้เพื่อสนับสนุนการตัดสินใจ ไม่ละเมิดสิทธิของผู้เกี่ยวข้อง</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-blue-700 mb-1">🧭 5. มาตรการกำกับดูแลและการบังคับใช้</h3>
+        <ul class="list-disc pl-6">
+          <li>แต่งตั้งคณะกรรมการ/ผู้รับผิดชอบในการกำกับดูแลการปฏิบัติตามนโยบาย</li>
+          <li>มีระบบตรวจสอบการใช้งานและบันทึกกิจกรรม (Audit Log)</li>
+          <li>การละเมิดนโยบายอาจถูกลงโทษตามระเบียบ และหากผิดกฎหมายอาจถูกดำเนินคดี</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-blue-700 mb-1">🔄 6. การทบทวนและปรับปรุง</h3>
+        <ul class="list-disc pl-6">
+          <li>ทบทวนนโยบายอย่างน้อยปีละ 1 ครั้ง</li>
+          <li>ปรับปรุงให้สอดคล้องกับกฎหมาย เทคโนโลยี และสภาพแวดล้อมของโรงเรียน</li>
+        </ul>
+      </div>
+
+      <p class="text-center text-gray-700 mt-4">
+        🔐 นโยบายนี้เป็นเกราะป้องกันทั้งด้านกฎหมายและจริยธรรม เพื่อให้ Latbualuang iCARE+ เป็นระบบที่ปลอดภัย น่าเชื่อถือ และเป็นประโยชน์สูงสุดต่อการดูแลนักเรียน
+      </p>
+    </div>
+  </div>
+</div>
+<script>
+  // Open Policy Modal helper
+  function openPolicyModal(){ document.getElementById('policyModal')?.classList.remove('hidden'); }
+</script>
+
+
+<script>
+  window.onLoginSuccess = function(){
+    var topAlert = document.getElementById('topAlert');
+    if (topAlert) topAlert.style.display = 'none';
+    var flo = document.getElementById('floatingLoginBtn');
+    if (flo) flo.style.display = 'none';
+  };
+  (function(){
+    try{
+      var u = sessionStorage.getItem('userData');
+      if (u) { window.onLoginSuccess(); }
+    }catch(_){}
+  })();
+</script>
+
+
+<script>
+(function(){
+  function isLoggedIn(){
+    try { return !!sessionStorage.getItem('userData'); } catch(e){ return false; }
+  }
+  function isAllowedTarget(el){
+    if (!el) return true;
+    // Allow: login modal & button & register opens
+    if (el.id === 'floatingLoginBtn') return true;
+    if (el.id === 'registerDropdownBtn') return true;
+    if (el.closest && (el.closest('#loginModal') || el.closest('#studentModal') || el.closest('#teacherModal') || el.closest('#dropdownMenu'))) return true;
+    // Allow header login button by checking its onclick opening loginModal
+    const txt = (el.textContent||'').trim();
+    if (/^🔐\s*Login$/.test(txt) || /เข้าสู่ระบบ/.test(txt) || /ลงทะเบียน/.test(txt)) {
+      // only allow those that actually open / relate to login/register
+      return true;
+    }
+    return false;
+  }
+  // Capture all clicks
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('button, a');
+    if (!btn) return;
+    if (isLoggedIn()) return;
+    if (isAllowedTarget(btn)) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    const lm = document.getElementById('loginModal');
+    if (lm) lm.classList.remove('hidden');
+  }, true);
+})();
+</script>
+
+</body>
+</html>
+
+<script>
+   function togglePassword(id) {
+  const input = document.getElementById(id);
+  input.type = input.type === "password" ? "text" : "password";
+}
+  </script>
+<!-- 🚨 Emergency Report Modal (Step 1: UI only) -->
+<div class="fixed z-50 inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden p-4" id="emergencyModal">
+<div class="bg-red-100 rounded-2xl shadow-2xl w-full max-w-md relative overflow-y-auto max-h-screen p-6 font-mitr">
+<button class="absolute top-2 right-2 text-gray-600 hover:text-black" onclick="closeModal('emergencyModal')">
+     ✖
+    </button>
+<h2 class="text-xl sm:text-2xl font-bold text-red-600 mb-4 text-center">
+     🚨🆘 แจ้งเหตุฉุกเฉิน🚨
+    </h2>
+<p class="text-sm text-blue-700 mt-2 mb-2 font-mitr" id="reporterName">
+ 👤 แจ้งโดย: (ระบบกำลังโหลดชื่อผู้แจ้ง...)
+</p>
+<input id="ReportedBy" name="ReportedBy" type="hidden"/>
+<form action="https://script.google.com/macros/s/AKfycbxLWBNIqSfa_88ONWAlsK-gNBLQZBVTOT4za3xWFANrZ-_6ZQgmtLD4VB4NlXo2Y6ZD/exec" class="space-y-3" enctype="multipart/form-data" id="emergencyForm" method="POST">
+<!-- Displayed student info (to be filled in dynamically after login) -->
+<!-- Emergency Type Dropdown -->
+<div>
+<label class="block text-sm">
+       ประเภทเหตุฉุกเฉิน:
+      </label>
+<select class="w-full px-3 py-2 rounded border text-black bg-white" id="emergencyType" name="EmergencyType" onchange="this.style.color='#000';" style="color:#60A5FA;">
+<option disabled="" selected="" value="">
+        -- เลือกประเภทเหตุ --
+       </option>
+<optgroup label="🔴 พฤติกรรมเสี่ยงและอันตราย" style="background-color:#fecaca;">
+<option style="background-color:#fee2e2;">
+         💥 พบนักเรียนมีแนวโน้มทำร้ายตัวเอง
+        </option>
+<option style="background-color:#fee2e2;">
+         👊 ทะเลาะวิวาท / ทำร้ายร่างกายกัน
+        </option>
+<option style="background-color:#fee2e2;">
+         😢 ถูกรังแก / บูลลี่ (Bullying)
+        </option>
+<option style="background-color:#fee2e2;">
+         🚬 พบสารเสพติด / แอลกอฮอล์ / สูบบุหรี่
+        </option>
+<option style="background-color:#fee2e2;">
+         📵 ปัญหาการกลั่นแกล้งทางออนไลน์
+        </option>
+</optgroup>
+<optgroup label="🟠 สุขภาพและสภาวะฉุกเฉิน" style="background-color:#fed7aa;">
+<option style="background-color:#ffedd5;">
+         🤢 ป่วยฉุกเฉิน / เป็นลม / คลื่นไส้ / หายใจไม่ออก
+        </option>
+<option style="background-color:#ffedd5;">
+         🧠 เครียดรุนแรง / วิตกกังวล / ภาวะทางอารมณ์
+        </option>
+<option style="background-color:#ffedd5;">
+         🩹 อุบัติเหตุ / บาดเจ็บจากกิจกรรม / ลื่นล้ม
+        </option>
+</optgroup>
+<optgroup label="🟡 ความปลอดภัยในสถานที่" style="background-color:#fef08a;">
+<option style="background-color:#fef9c3;">
+         🔥 ไฟไหม้ / กลิ่นไหม้ / ไฟฟ้าลัดวงจร
+        </option>
+<option style="background-color:#fef9c3;">
+         ⚠️ พบคนแปลกหน้า / ผู้บุกรุกในโรงเรียน
+        </option>
+<option style="background-color:#fef9c3;">
+         🧯 อุปกรณ์ / อาคารเรียน / สนามเด็กเล่นชำรุด
+        </option>
+<option style="background-color:#fef9c3;">
+         🚶‍♂️ นักเรียนหายตัว / เดินออกจากพื้นที่เรียน
+        </option>
+</optgroup>
+<optgroup label="🟢 หมวดอื่น ๆ" style="background-color:#bbf7d0;">
+<option style="background-color:#dcfce7;" value="อื่น ๆ (ระบุเพิ่มเติม)">
+         💬 อื่น ๆ (ระบุเพิ่มเติม)
+        </option>
+</optgroup>
+</select>
+<input class="mt-2 w-full px-3 py-2 rounded border text-black hidden" id="otherEmergencyInput" name="OtherEmergencyDetail" placeholder="โปรดระบุเพิ่มเติม..." type="text"/>
+</div>
+<!-- Location -->
+<div>
+<label class="block text-sm">
+       สถานที่เกิดเหตุ:
+      </label>
+<input class="w-full px-3 py-2 rounded border text-black" name="Location" required="" type="text"/>
+</div>
+<!-- File Uploads -->
+<div>
+<label class="block text-sm text-black">
+       แนบรูปภาพ (ไม่บังคับ):
+      </label>
+      <input class="w-full px-3 py-2 rounded border text-black" type="file" name="imageFile" accept="image/*"/>
+<label class="block text-sm mt-2 text-black" style="color:#000 !important;">
+       แนบคลิปเสียง (ไม่บังคับ):
+      </label>
+      <input class="w-full px-3 py-2 rounded border text-black" type="file" name="audioFile" accept="audio/*"/>
+<label class="block text-sm mt-2 text-black" style="color:#000 !important;">
+       แนบคลิปวิดีโอ (ไม่บังคับ):
+      </label>
+      <input class="w-full px-3 py-2 rounded border text-black" type="file" name="videoFile" accept="video/*"/>
+<p class="text-xs text-gray-600 mt-1">
+       ขนาดรวมไม่เกิน 5MB
+      </p>
+</div>
+<!-- Confirmation -->
+<label class="inline-flex items-start text-sm text-gray-700">
+<input class="mr-2 mt-1" required="" type="checkbox"/>
+      ข้าพเจ้าขอรับรองว่า ข้อมูลที่กรอกเป็นข้อเท็จจริงทุกประการ
+     </label>
+<p class="text-xs text-red-500 italic">
+      🔒 ข้อมูลจะถูกเก็บเป็นความลับ และส่งถึงครูผู้รับผิดชอบเพื่อดำเนินการช่วยเหลือโดยไม่เปิดเผยต่อผู้อื่น
+     </p>
+<!-- Submit -->
+<div class="text-center pt-2">
+<button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded" type="submit">
+       ยืนยันการแจ้งเหตุ
+      </button>
+<p class="text-sm mt-2" id="emergencyStatus">
+</p>
+</div>
+</form>
+</div>
+</div>
+<script>
+   function toggleOtherInput(value) {
+  const input = document.getElementById("otherEmergencyInput");
+  input.classList.toggle("hidden", value !== "อื่น ๆ (ระบุเพิ่มเติม)");
+}
+  </script>
+<!-- ✅ New Login Modal -->
+<div class="fixed z-50 inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden" id="loginModal">
+<div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm relative font-mitr">
+<button class="absolute top-2 right-2 text-gray-600 hover:text-black" onclick="document.getElementById('loginModal').classList.add('hidden')">
+     ✖
+    </button>
+<h2 class="text-xl font-bold mb-4 text-yellow-600">
+     🔐 เข้าสู่ระบบ
+    </h2>
+<form class="space-y-3" id="loginForm">
+<input class="w-full px-3 py-2 rounded border" name="Username" placeholder="ชื่อผู้ใช้" required="" type="text"/>
+<input class="w-full px-3 py-2 rounded border" name="Password" placeholder="รหัสผ่าน" required="" type="password"/>
+<button class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded" type="submit">
+      เข้าสู่ระบบ
+     </button>
+<p class="text-center text-sm mt-2 text-red-600" id="loginStatus">
+</p>
+</form>
+</div>
+</div>
+<!-- ✅ Login Script -->
+<script>
+   const loginScriptURL = "https://script.google.com/macros/s/AKfycbw7X3QPSj76DJR9eelvRI73MGZIltO_WX1g2OdQ5RIAhfxs_6ecBwJZa6V_qImLctIHuA/exec";
+
+  document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const username = this.Username.value.trim();
+    const password = this.Password.value.trim();
+    const formData = new FormData();
+    formData.append("Username", username);
+    formData.append("username", username);
+    formData.append("Password", password);
+    formData.append("password", password);
+    formData.append("IP_Address", "Auto");
+    formData.append("ip", "Auto");
+    formData.append("Device", navigator.userAgent);
+    formData.append("device", navigator.userAgent);
+
+    fetch(loginScriptURL, {
+      method: "POST",
+      body: formData,
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      const ok = data && (data.success === true || data.status === 'success');
+      if (ok) {
+        sessionStorage.setItem("userData", JSON.stringify(data));
+        document.getElementById("loginStatus").textContent = "✅ 🔐 เข้าสู่ระบบสำเร็จ";
+        document.getElementById("loginModal").classList.add("hidden");
+        enableProtectedFeatures(); if(window.onLoginSuccess){ try{ window.onLoginSuccess(); }catch(_){} }
+alert(`ยินดีต้อนรับ ${data.Prefix}${data.FirstName} ${data.LastName}`);
+      } else {
+        document.getElementById("loginStatus").textContent = "❌ " + data.message;
+      }
+    })
+    .catch((err) => {
+      document.getElementById("loginStatus").textContent = "❌ ข้อผิดพลาด: " + err.message;
+    });
+  });
+
+  function enableProtectedFeatures() {
+    const protectedButtons = document.querySelectorAll(".protected-button, .protected-form");
+    protectedButtons.forEach(btn => {
+      btn.disabled = false;
+      btn.classList.remove("opacity-50", "pointer-events-none");
+    });
+  }
+
+  window.onload = function () {
+    const user = sessionStorage.getItem("userData");
+    if (!user) {
+      const protectedButtons = document.querySelectorAll(".protected-button, .protected-form");
+      protectedButtons.forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add("opacity-50", "pointer-events-none");
+      });
+    } else {
+      enableProtectedFeatures(); if(window.onLoginSuccess){ try{ window.onLoginSuccess(); }catch(_){} }
+}
+  };
+  </script>
+<script>
+   document.addEventListener("DOMContentLoaded", () => {
+  const user = sessionStorage.getItem("userData");
+  if (user) {
+    const userObj = JSON.parse(user);
+    const fullName = `${userObj.Prefix}${userObj.FirstName} ${userObj.LastName} | ${userObj.Class}/${userObj.Room}`;
+    const userDisplay = document.getElementById("userDisplay");
+    if (userDisplay) {
+      userDisplay.textContent = `👋 ยินดีต้อนรับ: ${fullName}`;
+      userDisplay.classList.remove("hidden");
+    }
+  }
+});
+  </script>
+<!-- Student Registration Modal -->
+<div class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center" id="studentModal">
+<div class="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl p-6 font-[Mitr] relative">
+<button class="absolute top-2 right-3 text-xl" onclick="document.getElementById('studentModal').classList.add('hidden')">
+     ✖
+    </button>
+<h2 class="text-blue-600 text-xl font-semibold mb-4">
+     👨‍🎓 ลงทะเบียนสำหรับนักเรียน
+    </h2>
+<form class="space-y-4" enctype="multipart/form-data" id="studentForm" method="post" onsubmit="return validateForm(event)" onsubmit="return validateForm(event)">
+<!-- Student Info -->
+<fieldset class="bg-blue-50 rounded p-4">
+<legend class="text-blue-700 font-semibold">
+       🧑‍🎓 ข้อมูลนักเรียน
+      </legend>
+<input class="text-black placeholder-blue-300 block w-full border rounded px-3 py-2" name="StudentID" placeholder="รหัสประจำตัวนักเรียน" required=""/>
+<select class="text-black block w-full border rounded px-3 py-2" name="Prefix_Student" onchange="this.style.color='#000';" required="" style="color:#60A5FA;">
+<option value="">
+        -- คำนำหน้า --
+       </option>
+<option>
+        เด็กชาย
+       </option>
+<option>
+        เด็กหญิง
+       </option>
+<option>
+        นาย
+       </option>
+<option>
+        นางสาว
+       </option>
+</select>
+<input class="text-black placeholder-blue-300 block w-full border rounded px-3 py-2" name="FirstName_Student" placeholder="ชื่อ" required=""/>
+<input class="text-black placeholder-blue-300 block w-full border rounded px-3 py-2" name="LastName_Student" placeholder="นามสกุล" required=""/>
+<input class="text-black placeholder-blue-300 block w-full border rounded px-3 py-2" name="Nickname" placeholder="ชื่อเล่น" required=""/>
+<select class="text-black block w-full border rounded px-3 py-2" name="Class" onchange="this.style.color='#000';" required="" style="color:#60A5FA;">
+<option value="">
+        -- ระดับชั้น --
+       </option>
+<option>
+        1
+       </option>
+<option>
+        2
+       </option>
+<option>
+        3
+       </option>
+<option>
+        4
+       </option>
+<option>
+        5
+       </option>
+<option>
+        6
+       </option>
+<option>
+        ปวช.
+       </option>
+</select>
+<select class="text-black block w-full border rounded px-3 py-2" name="Room" onchange="this.style.color='#000';" required="" style="color:#60A5FA;">
+<option value="">
+        -- ห้องเรียน --
+       </option>
+<option>
+        1
+       </option>
+<option>
+        2
+       </option>
+<option>
+        3
+       </option>
+<option>
+        4
+       </option>
+</select>
+<input class="text-black placeholder-blue-400 block w-full border rounded px-3 py-2" id="birthdate" name="Birthdate" placeholder="วว/ดด/ปปปป" required="" type="text"/>
+<input class="text-black placeholder-blue-300 block w-full border rounded px-3 py-2" name="StudentPhone" pattern="\d{10}" placeholder="เบอร์โทรนักเรียน (10 หลัก)" required=""/>
+</fieldset>
+<!-- Parent Info -->
+<fieldset class="bg-green-50 rounded p-4">
+<legend class="text-green-700 font-semibold">
+       👨‍👩‍👧‍👦 ข้อมูลผู้ปกครอง
+      </legend>
+<select class="text-black block w-full border rounded px-3 py-2" name="Prefix_Parent" onchange="this.style.color='#000';" required="" style="color:#60A5FA;">
+<option value="">
+        -- คำนำหน้า --
+       </option>
+<option>
+        นาย
+       </option>
+<option>
+        นาง
+       </option>
+<option>
+        นางสาว
+       </option>
+</select>
+<input class="text-black placeholder-blue-300 block w-full border rounded px-3 py-2" name="FirstName_Parent" placeholder="ชื่อผู้ปกครอง" required=""/>
+<input class="text-black placeholder-blue-300 block w-full border rounded px-3 py-2" name="LastName_Parent" placeholder="นามสกุลผู้ปกครอง" required=""/>
+<input class="text-black placeholder-blue-300 block w-full border rounded px-3 py-2" name="ParentPhone" pattern="\d{10}" placeholder="เบอร์โทรผู้ปกครอง (10 หลัก)" required=""/>
+</fieldset>
+<!-- Account Info -->
+<fieldset class="bg-gray-50 rounded p-4">
+<legend class="text-gray-700 font-semibold">
+       👤 การเข้าใช้งานระบบ
+      </legend>
+<input class="text-black placeholder-blue-300 block w-full border rounded px-3 py-2" name="Username" placeholder="🆔 Username" required=""/>
+<input class="text-black placeholder-blue-300 block w-full border rounded px-3 py-2" maxlength="6" minlength="6" name="Password" pattern="[A-Za-z0-9]{6}" placeholder="🔑 Password (6 ตัวอักษร/ตัวเลข)" required="" type="password"/>
+<input class="text-black placeholder-blue-300 block w-full border rounded px-3 py-2" maxlength="6" minlength="6" name="ConfirmPassword" placeholder="Confirm Password" required="" type="password"/>
+</fieldset>
+<div class="text-sm mt-2 text-center" id="formMessage">
+</div>
+<div style="text-align: center; margin-top: 20px;">
+<button class="w-full hover:bg-blue-200 text-blue-700 py-2 px-4 rounded bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded" style="width: auto; white-space: nowrap;" type="submit">
+       บันทึกข้อมูล
+      </button>
+</div>
+</form>
+</div>
+</div>
+<script>
+function validateForm(event) {
+  event.preventDefault();
+  const form = event.target;
+  const message = document.getElementById('formMessage');
+
+  // Basic validations
+  if (form.Password.value !== form.ConfirmPassword.value) {
+    message.textContent = "❌ รหัสผ่านไม่ตรงกัน";
+    message.className = "text-red-600";
+    return false;
+  }
+
+  // Build payload and send to Apps Script
+  const formData = new FormData(form);
+  fetch("https://script.google.com/macros/s/AKfycbxdY__BNd_oV2kTNa4rT7lS0YaHJHwRPGCHCR9PmcPBfKnTXZfLWXbx1Nf1FslsRuUH/exec", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.text())
+  .then(msg => {
+     + msg;
+    message.className = "text-green-600";
+    form.reset();
+  })
+  .catch((err) => {
+    message.textContent = "❌ ไม่สามารถเชื่อมต่อได้: " + err.message;
+    message.className = "text-red-600";
+  });
+  return false;
+}
+</script>
+
+<script>
+function validateTeacherForm(event) {
+  event.preventDefault();
+  const form = event.target;
+  const msg = document.getElementById('teacherFormMessage');
+
+  // Clear previous state
+  msg.textContent = "";
+  msg.className = "";
+
+  // Pull values
+  const prefix = form.querySelector('[name="Prefix_Teacher"]')?.value.trim();
+  const firstName = form.querySelector('[name="FirstName_Teacher"]')?.value.trim();
+  const lastName = form.querySelector('[name="LastName_Teacher"]')?.value.trim();
+  const nick = form.Nickname?.value.trim();
+  const subject = form.SubjectGroup?.value.trim();
+  const phone = form.Phone?.value.trim();
+  const lineId = form.LineID?.value.trim();
+  const email = form.Email?.value.trim();
+  const username = form.Username?.value.trim();
+  const password = form.Password?.value;
+  const confirm = form.ConfirmPassword?.value;
+
+  // Front-end required checks
+  const required = [
+    ['คำนำหน้า', prefix],
+    ['ชื่อ', firstName],
+    ['นามสกุล', lastName],
+    ['ชื่อเล่น', nick],
+    ['กลุ่มสาระ/ฝ่าย', subject],
+    ['เบอร์โทรศัพท์', phone],
+    ['Line ID', lineId],
+    ['อีเมล', email],
+    ['Username', username],
+    ['Password', password],
+    ['ConfirmPassword', confirm]
+  ];
+
+  for (const [label, val] of required) {
+    if (!val) {
+      msg.textContent = "❌ โปรดกรอกข้อมูลให้ครบทุกช่อง (" + label + ")";
+      msg.className = "text-red-600";
+      return false;
+    }
+  }
+
+  if (!/^\d{10}$/.test(phone)) {
+    msg.textContent = "❌ เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลัก";
+    msg.className = "text-red-600";
+    return false;
+  }
+
+  if (!/^[A-Za-z0-9]{6}$/.test(password)) {
+    msg.textContent = "❌ รหัสผ่านต้องเป็นตัวอักษร/ตัวเลข 6 ตัว";
+    msg.className = "text-red-600";
+    return false;
+  }
+
+  if (password !== confirm) {
+    msg.textContent = "❌ รหัสผ่านไม่ตรงกัน";
+    msg.className = "text-red-600";
+    return false;
+  }
+
+  // Build payload for Apps Script (multipart/form-data)
+  const fd = new FormData();
+  fd.append("Timestamp", new Date().toISOString());
+  fd.append("Prefix_Teacher", prefix);
+  fd.append("FirstName_Teacher", firstName);
+  fd.append("LastName_Teacher", lastName);
+  fd.append("Nickname", nick);
+  fd.append("SubjectGroup", subject);
+  fd.append("Phone", phone);
+  fd.append("LineID", lineId);
+  fd.append("Email", email);
+  fd.append("Username", username);
+  fd.append("Password", password);
+  fd.append("ConfirmPassword", confirm);
+
+  // Send to the provided Apps Script URL
+  const TEACHER_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxdY__BNd_oV2kTNa4rT7lS0YaHJHwRPGCHCR9PmcPBfKnTXZfLWXbx1Nf1FslsRuUH/exec";
+
+  fetch(TEACHER_SCRIPT_URL, {
+    method: "POST",
+    body: fd
+  })
+  .then(async (res) => {
+    const text = await res.text().catch(() => "");
+    if (res.ok) {
+      msg.textContent = "✅ ลงทะเบียนสำเร็จ";
+      msg.className = "text-green-600";
+      form.reset();
+    } else {
+      msg.textContent = "❌ บันทึกไม่สำเร็จ: " + (text || res.status);
+      msg.className = "text-red-600";
+    }
+  })
+  .catch((err) => {
+    msg.textContent = "❌ ไม่สามารถเชื่อมต่อได้: " + err.message;
+    msg.className = "text-red-600";
+  });
+
+  return false;
+}
+</script>
+
+<script>
+   document.querySelectorAll('a').forEach(el => {
+  if (el.textContent.includes("🧑‍🎓 ลงทะเบียนนักเรียน")) {
+    el.setAttribute("onclick", "document.getElementById('studentModal').classList.remove('hidden')");
+  }
+});
+  </script>
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("select option").forEach(opt => {
+    const text = opt.textContent.trim();
+    if (["เด็กชาย", "เด็กหญิง", "นาย", "นางสาว", "-- คำนำหน้า --"].includes(text)) {
+      opt.style.color = "#60A5FA";
+    }
+  });
+});
+  </script>
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("select option").forEach(opt => {
+    const text = opt.textContent.trim();
+    if (text) {
+      opt.style.color = "#60A5FA";
+    }
+  });
+});
+  </script>
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+  const placeholders = ["คำนำหน้า", "ระดับชั้น", "ห้องเรียน", "วว/ดด/ปปปป"];
+  document.querySelectorAll("input[placeholder], select[placeholder]").forEach(el => {
+    if (placeholders.includes(el.placeholder.trim())) {
+      el.style.color = "#60A5FA";
+    }
+  });
+});
+  </script>
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+  const targets = ["-- คำนำหน้า --", "-- ระดับชั้น --", "-- ห้องเรียน --", "วว/ดด/ปปปป"];
+
+  // Set color for placeholder-like options in select dropdowns
+  document.querySelectorAll("select option").forEach(option => {
+    if (targets.includes(option.textContent.trim())) {
+      option.style.color = "#60A5FA";
+    }
+  });
+
+  // Set color for placeholder in input fields
+  document.querySelectorAll("input[placeholder]").forEach(input => {
+    if (targets.includes(input.placeholder.trim())) {
+      input.style.color = "#60A5FA";
+    }
+  });
+});
+  </script>
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+  const blueOptions = ["-- คำนำหน้า --", "-- ระดับชั้น --", "-- ห้องเรียน --", "วว/ดด/ปปปป"];
+  document.querySelectorAll("select option").forEach(opt => {
+    if (blueOptions.includes(opt.textContent.trim())) {
+      opt.style.color = "#60A5FA";
+    }
+  });
+});
+  </script>
+<script>
+   flatpickr("#birthdate", {
+    dateFormat: "d/m/Y",
+    locale: "th",
+    allowInput: true
+  });
+  </script>
+<!-- 👨‍🏫 Teacher Registration Modal (Updated) -->
+<div class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center" id="teacherModal">
+<div class="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl p-6 font-[Mitr] relative">
+<button class="absolute top-2 right-3 text-xl" onclick="document.getElementById('teacherModal').classList.add('hidden')">
+     ✖
+    </button>
+<h2 class="text-blue-600 text-xl font-semibold mb-4">
+     👨‍🏫 ลงทะเบียนสำหรับครู
+    </h2>
+<form class="space-y-4" enctype="multipart/form-data" id="teacherForm" method="post" onsubmit="return validateTeacherForm(event)">
+<fieldset class="bg-green-50 rounded p-4">
+<legend class="text-green-700 font-semibold">
+       👩‍🏫 ข้อมูลครู
+      </legend>
+<select class="text-black block w-full border rounded px-3 py-2" id="PrefixSelect" name="Prefix_Teacher" onchange="updateSelectColor(this)" required="" style="color:#60A5FA;">
+<option disabled="True" hidden="True" selected="True" style="color:#60A5FA;" value="">
+        -- คำนำหน้า --
+       </option>
+<option value="นาย">
+        นาย
+       </option>
+<option value="นาง">
+        นาง
+       </option>
+<option value="นางสาว">
+        นางสาว
+       </option>
+</select>
+<input class="text-black placeholder-blue-400 block w-full border rounded px-3 py-2" name="FirstName_Teacher" placeholder="ชื่อ" required=""/>
+<input class="text-black placeholder-blue-400 block w-full border rounded px-3 py-2" name="LastName_Teacher" placeholder="นามสกุล" required=""/>
+<input class="text-black placeholder-blue-400 block w-full border rounded px-3 py-2" name="Nickname" placeholder="ชื่อเล่น" required=""/>
+<select class="text-black block w-full border rounded px-3 py-2" id="SubjectGroupSelect" name="SubjectGroup" onchange="updateSelectColor(this)" required="" style="color:#60A5FA;">
+<option disabled="True" hidden="True" selected="True" style="color:#60A5FA;" value="">
+        -- กลุ่มสาระฯ/ฝ่าย --
+       </option>
+<option value="กลุ่มสาระการเรียนรู้ภาษาไทย">
+        กลุ่มสาระการเรียนรู้ภาษาไทย
+       </option>
+<option value="กลุ่มสาระการเรียนรู้คณิตศาสตร์">
+        กลุ่มสาระการเรียนรู้คณิตศาสตร์
+       </option>
+<option value="กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี">
+        กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี
+       </option>
+<option value="กลุ่มสาระการเรียนรู้สังคมศึกษา ศาสนา และวัฒนธรรม">
+        กลุ่มสาระการเรียนรู้สังคมศึกษา ศาสนา และวัฒนธรรม
+       </option>
+<option value="กลุ่มสาระการเรียนรู้สุขศึกษาและพลศึกษา">
+        กลุ่มสาระการเรียนรู้สุขศึกษาและพลศึกษา
+       </option>
+<option value="กลุ่มสาระการเรียนรู้ศิลปะ">
+        กลุ่มสาระการเรียนรู้ศิลปะ
+       </option>
+<option value="กลุ่มสาระการเรียนรู้การงานอาชีพ">
+        กลุ่มสาระการเรียนรู้การงานอาชีพ
+       </option>
+<option value="กลุ่มสาระการเรียนรู้ภาษาต่างประเทศ">
+        กลุ่มสาระการเรียนรู้ภาษาต่างประเทศ
+</option>
+<option value="ประกาศนียบัตรวิชาชีพ(ปวช.)">
+        ประกาศนียบัตรวิชาชีพ(ปวช.)
+       </option>
+<option value="ฝ่ายบริหาร">
+        ฝ่ายบริหาร
+       </option>
+<option value="สนับสนุนการศึกษา">
+        สนับสนุนการศึกษา
+       </option>
+</select>
+<input class="text-black placeholder-blue-400 block w-full border rounded px-3 py-2" name="Phone" pattern="\d{10}" placeholder="เบอร์โทรศัพท์ครู 10 หลัก" required=""/>
+<input class="text-black placeholder-blue-400 block w-full border rounded px-3 py-2" name="Email" placeholder="อีเมล" required="" type="email"/>
+<input class="text-black placeholder-blue-400 block w-full border rounded px-3 py-2" name="LineID" placeholder="Line ID" required=""/>
+</fieldset>
+<fieldset class="bg-gray-50 rounded p-4">
+<legend class="text-gray-700 font-semibold">
+       👤 การเข้าใช้งานระบบ
+      </legend>
+<input class="text-black placeholder-blue-400 block w-full border rounded px-3 py-2" name="Username" placeholder="🆔 Username" required=""/>
+<div class="relative">
+<input class="text-black placeholder-blue-400 block w-full border rounded px-3 py-2" id="PasswordTeacher" maxlength="6" minlength="6" name="Password" pattern="[A-Za-z0-9]{6}" placeholder="🔑 Password" required="" type="password"/>
+<button class="absolute top-2 right-2 text-sm" onclick="togglePassword('PasswordTeacher')" type="button">
+        👁️
+       </button>
+</div>
+<div class="relative">
+<input class="text-black placeholder-blue-400 block w-full border rounded px-3 py-2" id="ConfirmPasswordTeacher" maxlength="6" minlength="6" name="ConfirmPassword" placeholder="ConfirmPassword" required="" type="password"/>
+<button class="absolute top-2 right-2 text-sm" onclick="togglePassword('ConfirmPasswordTeacher')" type="button">
+        👁️
+       </button>
+</div>
+</fieldset>
+<div class="text-sm mt-2 text-center" id="teacherFormMessage">
+</div>
+<div class="text-center mt-4">
+<button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded" type="submit">
+       บันทึกข้อมูล
+      </button>
+</div>
+</form>
+</div>
+</div>
+<script>
+   function updateSelectColor(select) {
+  if (select.value === "") {
+    select.style.color = "#60A5FA";
+  } else {
+    select.style.color = "#000";
+  }
+}
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("select").forEach(select => {
+    updateSelectColor(select);
+  });
+});
+  </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const photoInput = document.getElementById("TeacherPhoto");
+  const statusDiv = document.getElementById("teacherFormMessage");
+
+  if (photoInput) {
+    photoInput.addEventListener("change", function () {
+      const file = this.files[0];
+      if (file && file.size > 1024 * 1024) {
+        statusDiv.textContent = "❌ ขนาดไฟล์ต้องไม่เกิน 1MB";
+        statusDiv.className = "text-red-600";
+        this.value = ""; // ล้างค่า
+      } else {
+        statusDiv.textContent = "";
+        statusDiv.className = "";
+      }
+    });
+  }
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const user = JSON.parse(sessionStorage.getItem("userData") || "{}");
+
+  const fullName = `${user.Prefix || ""}${user.FirstName || ""} ${user.LastName || ""}`.trim();
+  const classroom = user.Class && user.Room ? ` ม.${user.Class}/${user.Room}` : "";
+  const displayName = fullName + classroom;
+
+  // แสดงชื่อใน UI
+  const display = document.getElementById("reporterName");
+  if (display) {
+    display.textContent = "👤 แจ้งโดย: " + displayName;
+  }
+
+  // ใส่ค่า hidden input สำหรับส่งไปใน Google Sheet
+  const input = document.getElementById("ReportedBy");
+  if (input) {
+    input.value = displayName;
+  }
+});
+</script>
+
+<!-- 📞 iCARE พร้อมฟังเสมอ Modal -->
+<div class="fixed z-50 inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden p-4" id="icareListenModal">
+<div class="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 font-mitr relative">
+<button class="absolute top-2 right-2 text-gray-600 hover:text-black" onclick="document.getElementById('icareListenModal').classList.add('hidden')">✖</button>
+<h2 class="text-2xl font-bold text-center mb-4 text-green-600">📞 iCARE พร้อมฟังเสมอ</h2>
+<form class="space-y-4" id="icareListenForm">
+<div>
+<label class="block text-sm font-mitr" for="icareReason" style="color:#60D9A3;">โปรดเลือกสิ่งที่คุณต้องการ:</label>
+<select class="w-full px-3 py-2 rounded border text-black bg-white font-mitr" id="icareReason" name="icareReason" onchange="this.style.color='#000';" required="" style="color:#60D9A3;">
+<option disabled="" selected="" value="">-- กรุณาเลือกเหตุผล --</option>
+<option>😊 อยากเล่าเรื่องบางอย่างให้ใครสักคนฟัง (ไม่ตัดสิน ไม่ต้องแก้ แค่ฟังก็พอแล้ว)</option>
+<option>👩‍🏫 อยากให้ครูประจำชั้นรับรู้เรื่องนี้</option>
+<option>📞 อยากให้ครูหรือผู้ดูแลติดต่อกลับ (ระบุชื่อคนที่ไว้ใจได้เลย เดี๋ยวเราช่วยติดต่อให้)</option>
+<option>🤝 อยากพูดคุยกับเพื่อนที่ไว้ใจและพร้อมรับฟัง (คุยกับคนที่เข้าใจเราบ้าง ก็น่าจะช่วยได้เนอะ)</option>
+<option>👨‍💼 อยากให้ครูหรือผู้บริหารที่ไว้วางใจรับรู้และดูแล (บอกชื่อไว้ได้เลย เดี๋ยวเราช่วยส่งต่อ)</option>
+<option>✍️ อื่น ๆ ที่อยากบอกเพิ่มเติม (พิมพ์ไว้ได้เลย ไม่ต้องเก็บไว้คนเดียว)</option>
+</select>
+</div>
+<div>
+<label class="block text-sm text-gray-700 font-mitr" for="icareDetails">✍️ รายละเอียดเพิ่มเติม (ถ้ามี):</label>
+<textarea class="w-full px-3 py-2 rounded border text-black font-mitr min-h-[150px]" id="icareDetails" name="icareDetails" placeholder="" rows="6" style="resize: none;" required=""></textarea>
+</div>
+<p class="text-sm text-gray-600 mt-2 font-mitr">🔐 ข้อมูลทั้งหมดจะถูกเก็บเป็นความลับและใช้เพื่อดูแลอย่างปลอดภัยเท่านั้น</p>
+<p class="text-sm text-green-600 italic font-mitr">🙏 ขอบคุณที่กล้าเปิดใจ 💛 ไม่จำเป็นต้องเผชิญปัญหาเพียงลำพัง มีคนพร้อมฟังและช่วยเหลือเสมอ</p>
+<div class="text-center">
+<button class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded font-mitr" style="width: auto;" type="submit">บันทึกข้อมูล</button>
+<p class="text-sm mt-2 font-mitr" id="icareListenStatus"></p>
+</div>
+</form>
+</div>
+</div>
+<script>
+  document.getElementById("icareListenForm")?.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const status = document.getElementById("icareListenStatus");
+    status.textContent = "✅ บันทึกสำเร็จ";
+    status.className = "text-green-600";
+    this.reset();
+  });
+</script>
+<!-- Emotion Assessment Modal -->
+<script>
+function showEmotionModal() {
+  const modal = document.getElementById("emotionModal");
+  if (modal) {
+    modal.style.display = "flex";
+  }
+}
+
+function hideEmotionModal() {
+  const modal = document.getElementById("emotionModal");
+  if (modal) {
+    modal.style.display = "none";
+  }
+}
+
+window.addEventListener("click", function (event) {
+  const modal = document.getElementById("emotionModal");
+  if (event.target === modal) {
+    hideEmotionModal();
+  }
+});
+</script>
+<!-- 💗 แบบประเมินความรู้สึกเพื่อความเข้าใจและการดูแล Modal (แก้ไขแล้ว) -->
+<!-- 💗 แบบประเมินความรู้สึกเพื่อความเข้าใจและการดูแล Modal (เวอร์ชันใช้งานได้แน่นอน) -->
+<div class="fixed z-50 inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4" id="emotionModal">
+<div class="modal-content relative font-mitr max-h-[90vh] overflow-y-auto">
+<button class="absolute top-2 right-2 text-gray-600 hover:text-black text-2xl" onclick="hideEmotionModal()">✖</button>
+<h2 class="text-xl font-bold text-pink-600 text-center mb-2">💗 แบบประเมินความรู้สึกเพื่อความเข้าใจและการดูแล</h2>
+<p class="text-sm text-cyan-600 text-right mb-4">🕒 ใช้เวลาไม่เกิน 5 นาที 💙</p>
+<form id="emotionForm">
+<fieldset style="background-color: #c8f7c5; border: none; padding: 15px; margin-top: 10px;">
+<legend style="background-color: #66bb6a; padding: 5px 10px; color: white; border-radius: 5px;">✅ ส่วนที่ 1: ความรู้สึกช่วงนี้เป็นอย่างไรบ้าง?</legend>
+<p>เลือกตามความรู้สึกของตัวเอง ไม่มีผิดถูกเลยนะ</p>
+<label>1. 😊 รู้สึกมีความสุขในแต่ละวันไหม</label>
+<br/> <select required="required"><option value="">-- กรุณาเลือก --</option><option>😄 ใช่เลย / ทุกวัน</option><option>🙂 บ่อย</option><option>😐 บางครั้ง</option><option>😞 ไม่เลย</option></select><br/><br/>
+<label>2. 🏫 รู้สึกดีที่ได้มาโรงเรียนไหม</label>
+<br/> <select required="required"><option value="">-- กรุณาเลือก --</option><option>🥰 ใช่เลย / ทุกวัน</option><option>😊 บ่อย</option><option>😐 บางครั้ง</option><option>🙁 ไม่เลย</option></select><br/><br/>
+<label>3. 🎨 ทำกิจกรรมแล้วรู้สึกสนุกหรือมีความหมายบ้างไหม</label>
+<br/> <select required="required"><option value="">-- กรุณาเลือก --</option><option>🤩 ใช่เลย / ทุกวัน</option><option>😃 บ่อย</option><option>😐 บางครั้ง</option><option>😩 ไม่เลย</option></select><br/><br/>
+<label>4. 😴 นอนหลับพอไหม</label>
+<br/> <select required="required"><option value="">-- กรุณาเลือก --</option><option>🛌 หลับสบายทุกคืน</option><option>😌 หลับดีเกือบทุกวัน</option><option>😕 หลับไม่ค่อยพอ</option><option>😫 หลับไม่ดีเลย</option></select><br/><br/>
+<label>5. 💖 รู้สึกว่าตัวเองมีคุณค่าไหม</label>
+<br/> <select required="required"><option value="">-- กรุณาเลือก --</option><option>🌟 มากเลย รู้ว่าตัวเองมีค่า</option><option>😊 พอสมควร</option><option>😐 ไม่แน่ใจ</option><option>😞 ไม่เลย</option></select>
+</fieldset>
+<fieldset style="background-color: #ffe0b2; border: none; padding: 15px; margin-top: 10px;">
+<legend style="background-color: #fb8c00; padding: 5px 10px; color: white; border-radius: 5px;">⚠️ ส่วนที่ 2: มีเรื่องที่รู้สึกกังวลไหม?</legend>
+<label>6. 🧍 รู้สึกว่าไม่มีใครเข้าใจเลยไหม</label>
+<br/> <select required="required"><option value="">-- กรุณาเลือก --</option><option>😄 ไม่เลย</option><option>🙂 น้อยมาก / แทบไม่มี</option><option>😕 บางครั้ง / ค่อนข้างบ่อย</option><option>😢 บ่อยมาก / แทบทุกวัน</option></select><br/><br/>
+<label>7. 💔 เคยคิดว่าอยากหายไปจากโลกนี้ไหม</label>
+<br/> <select required="required"><option value="">-- กรุณาเลือก --</option><option>😄 ไม่เลย</option><option>🙂 น้อยมาก / แทบไม่มี</option><option>😕 บางครั้ง / ค่อนข้างบ่อย</option><option>😢 บ่อยมาก / แทบทุกวัน</option></select><br/><br/>
+<label>8. 📚 ไม่กล้าคุยกับเพื่อน หรือไม่เข้าใจบทเรียนบ้างไหม</label>
+<br/> <select required="required"><option value="">-- กรุณาเลือก --</option><option>😄 ไม่เลย</option><option>🙂 น้อยมาก / แทบไม่มี</option><option>😕 บางครั้ง / ค่อนข้างบ่อย</option><option>😢 บ่อยมาก / แทบทุกวัน</option></select><br/><br/>
+<label>9. 😔 เคยโดนล้อ หรือมีปัญหากับเพื่อนไหม</label>
+<br/> <select required="required"><option value="">-- กรุณาเลือก --</option><option>😄 ไม่เลย</option><option>🙂 น้อยมาก / แทบไม่มี</option><option>😕 บางครั้ง / ค่อนข้างบ่อย</option><option>😢 บ่อยมาก / แทบทุกวัน</option></select><br/><br/>
+<label>10. 😤 โกรธง่ายหรือหงุดหงิดบ่อยจนควบคุมไม่ค่อยได้ไหม</label>
+<br/> <select required="required"><option value="">-- กรุณาเลือก --</option><option>😄 ไม่เลย</option><option>🙂 น้อยมาก / แทบไม่มี</option><option>😕 บางครั้ง / ค่อนข้างบ่อย</option><option>😢 บ่อยมาก / แทบทุกวัน</option></select>
+</fieldset>
+<fieldset style="background-color: #b2ebf2; border: none; padding: 15px; margin-top: 10px;">
+<legend style="background-color: #4dd0e1; padding: 5px 10px; color: white; border-radius: 5px;">💬 ส่วนที่ 3: อยากบอกอะไรครูไหม?</legend>
+<label for="message">✍️ เขียนข้อความของคุณ (ไม่เกิน 150 ตัวอักษร)</label><br/>
+<textarea id="message" maxlength="150" name="message" placeholder="เช่น ช่วงนี้นอนไม่หลับ รู้สึกเหนื่อยมากเลย / อยากให้ครูคุยกับเพื่อนที่ล้อบ่อยๆ / ไม่อยากมาโรงเรียนเลย เป็นต้น" required="required" rows="3" style="resize: none; width: 100%; box-sizing: border-box;"></textarea>
+</fieldset>
+<p id="submitStatus" style="margin-top: 15px;"></p>
+<button style="margin-top: 10px; background-color: #4CAF50; color: white; padding: 10px 16px; border: none; border-radius: 6px; background-color: #e91e63 !important; display: block; margin: 20px auto;" type="submit">ส่งแบบประเมิน</button>
+</form>
+<p class="text-sm mt-2 text-center text-green-600" id="submitStatus"></p>
+</div>
+</div>
+<script>
+  function showEmotionModal() {
+    document.getElementById("emotionModal").classList.remove("hidden");
+  }
+
+  function hideEmotionModal() {
+    document.getElementById("emotionModal").classList.add("hidden");
+  }
+
+  window.addEventListener("click", function(event) {
+    const modal = document.getElementById("emotionModal");
+    if (event.target === modal) {
+      hideEmotionModal();
+    }
+  });
+
+  document.getElementById("emotionForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const requiredFields = form.querySelectorAll("select[required], textarea[required]");
+    let allFilled = true;
+    requiredFields.forEach(field => {
+      if (!field.value.trim()) {
+        allFilled = false;
+      }
+    });
+    const status = document.getElementById("submitStatus");
+    if (!allFilled) {
+      status.textContent = "❌ กรุณากรอกข้อมูลให้ครบทุกข้อ";
+      status.className = "text-red-600 text-center mt-2";
+    } else {
+      status.textContent = "✅ ส่งแบบประเมินสำเร็จ";
+      status.className = "text-green-600 text-center mt-2";
+      form.reset();
+    }
+  });
+</script>
+<!-- ✅ Modal แผนที่จุดเสี่ยงและจุดเฝ้าระวัง -->
+<div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50" id="riskMapModal" style="display:none;">
+<div class="bg-white rounded-lg shadow-lg relative w-[90%] max-w-2xl">
+<button class="absolute top-2 left-2 text-lg font-bold text-red-600 hover:text-red-800 bg-white rounded-full w-8 h-8 flex items-center justify-center" onclick="document.getElementById('riskMapModal').style.display='none'">❌</button>
+<img alt="แผนที่จุดเสี่ยง iCARE" class="w-full h-auto rounded-b-lg" src="https://img5.pic.in.th/file/secure-sv1/Ladbualuang-iCARE-Risk--Alert-Map-v.26b9ee13c02bbf2f9.png"/>
+</div>
+</div>
+<section style="background-color:#dbeafe;padding:20px;border-radius:20px;margin-top:30px;">
+<h2 style="text-align:center;font-size:28px;color:#1d4ed8;font-weight:bold;">✨ ติดต่อเรา ✨</h2>
+<form>
+<div style="display:flex;gap:10px;margin-top:10px;">
+<div style="flex:1;">
+<label>ชื่อ-นามสกุล *</label>
+<input style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" type="text"/>
+</div>
+<div style="flex:1;">
+<label>ติดต่อเรื่อง *</label>
+<select style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;">
+<option>-- เลือกหัวข้อ --</option>
+</select>
+</div>
+</div>
+<div style="margin-top:10px;">
+<label>รายละเอียด *</label>
+<textarea style="width:100%;height:120px;padding:10px;border-radius:10px;border:1px solid #ccc; resize: none;"></textarea>
+</div>
+<div style="display:flex;gap:10px;margin-top:10px;">
+<div style="flex:1;">
+<label>อีเมล *</label>
+<input style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" type="email"/>
+</div>
+<div style="flex:1;">
+<label>เบอร์โทรศัพท์ *</label>
+<input style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" type="tel"/>
+</div>
+</div>
+<div style="text-align:center;margin-top:20px;">
+<button style="background-color:#2563eb;color:white;padding:12px 30px;border:none;border-radius:10px;font-weight:bold;font-size:16px;box-shadow:2px 2px 5px rgba(0,0,0,0.2);" type="submit">
+        ⚠️ ส่งข้อความ
+      </button>
+</div>
+<p style="text-align:center;font-size:12px;margin-top:10px;">
+      * ข้อมูลของท่านจะถูกเก็บเป็นความลับและใช้เพื่อการติดต่อกลับเท่านั้น
+    </p>
+</form>
+</section>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("studentRegisterForm");
+  if (form) {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      fetch("https://script.google.com/macros/s/AKfycbxdY__BNd_oV2kTNa4rT7lS0YaHJHwRPGCHCR9PmcPBfKnTXZfLWXbx1Nf1FslsRuUH/exec", {
+        method: "POST",
+        body: formData
+      })
+      .then(response => response.text())
+      .then(msg => {
+        document.getElementById("formMessage")?.textContent = msg;
+      })
+      .catch(error => {
+        document.getElementById("formMessage")?.textContent = "❌ เกิดข้อผิดพลาดในการส่งข้อมูล";
+      });
+    });
+  }
+});
+</script>
+<script>
+// --- Emergency form wiring (validation + submit to GAS) ---
+(function() {
+  const form = document.getElementById("emergencyForm");
+  if (!form) return;
+  let statusEl = document.getElementById("emergencyStatus");
+  if (!statusEl) { statusEl = document.createElement("p"); statusEl.id = "emergencyStatus"; statusEl.className = "text-sm mt-2"; form.appendChild(statusEl); }
+  const typeSel = document.getElementById("emergencyType") || form.querySelector('[name="EmergencyType"], select[name="emergencyType"]');
+  const locInput = form.querySelector('[name="Location"], #Location, input[name="location"]');
+  const confirmBox = form.querySelector('input[type="checkbox"]');
+  const otherInput = document.getElementById('otherEmergencyInput');
+
+  if (typeSel && otherInput) {
+    typeSel.addEventListener('change', function() {
+      const show = (String(this.value||'').trim() === 'อื่น ๆ (ระบุเพิ่มเติม)');
+      otherInput.classList.toggle('hidden', !show);
+      if (!show) otherInput.value = "";
+    });
+  }
+
+  async function lookupStudentContext(username) {
+    try {
+      if (typeof loginScriptURL !== "string" || !loginScriptURL) return null;
+      const params = new URLSearchParams(); params.append("action","lookup"); params.append("Username", username);
+      const res = await fetch(loginScriptURL, { method: "POST", body: params });
+      if (!res.ok) return null;
+      const ct = res.headers.get("content-type")||"";
+      if (ct.includes("application/json")) {
+        const j = await res.json().catch(()=>null); return j && (j.data || j);
+      } else { try { return JSON.parse(await res.text()); } catch(_) { return null; } }
+    } catch(_) { return null; }
+  }
+
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+    statusEl.textContent = ""; statusEl.className = "text-sm mt-2";
+
+    const typeVal = typeSel ? String(typeSel.value||"").trim() : "";
+    const locVal  = locInput ? String(locInput.value||"").trim() : "";
+    const agreed  = !!(confirmBox && confirmBox.checked);
+    if (!typeVal) { statusEl.textContent = "❌ กรุณาเลือกประเภทเหตุฉุกเฉิน"; statusEl.classList.add("text-red-600"); return; }
+    if (!locVal)  { statusEl.textContent = "❌ กรุณาระบุสถานที่เกิดเหตุ"; statusEl.classList.add("text-red-600"); return; }
+    if (!agreed)  { statusEl.textContent = "❌ กรุณาติ๊กยืนยันว่าเป็นข้อมูลจริงทุกประการ"; statusEl.classList.add("text-red-600"); return; }
+
+    // size check <= 5MB
+    const _fileInputs = form.querySelectorAll('input[type="file"]');
+    let _totalBytes = 0; _fileInputs.forEach(inp => { Array.from(inp.files||[]).forEach(f => { _totalBytes += (f && f.size) ? f.size : 0; }); });
+    if (_totalBytes > 5 * 1024 * 1024) { statusEl.textContent="❌ ขนาดไฟล์แนบรวมเกิน 5MB"; statusEl.classList.add("text-red-600"); return; }
+
+    let session = null; try { session = JSON.parse(sessionStorage.getItem("userData") || "null"); } catch(_){}
+    if (!session) { statusEl.textContent = "❌ กรุณาเข้าสู่ระบบก่อนแจ้งเหตุ"; statusEl.classList.add("text-red-600"); return; }
+    const usr = session && session.data ? session.data : session;
+    const username = usr && (usr.Username || usr.username);
+    if (!username) { statusEl.textContent = "❌ ไม่พบข้อมูลผู้ใช้ กรุณาล็อกอินใหม่"; statusEl.classList.add("text-red-600"); return; }
+
+    const fd = new FormData(form);
+    fd.append("Username", username);
+
+    let ctx = {
+      StudentID: usr.StudentID,
+      Prefix_Student: usr.Prefix_Student || usr.Prefix,
+      FirstName_Student: usr.FirstName_Student || usr.FirstName,
+      LastName_Student: usr.LastName_Student || usr.LastName,
+      Class: usr.Class, Room: usr.Room, StudentPhone: usr.StudentPhone || usr.Phone
+    };
+    if (!ctx.StudentID || !ctx.FirstName_Student || !ctx.LastName_Student) {
+      const looked = await lookupStudentContext(username);
+      if (looked) {
+        ctx.StudentID = ctx.StudentID || looked.StudentID || looked.studentId || "";
+        ctx.Prefix_Student = ctx.Prefix_Student || looked.Prefix_Student || looked.Prefix || "";
+        ctx.FirstName_Student = ctx.FirstName_Student || looked.FirstName_Student || looked.FirstName || "";
+        ctx.LastName_Student  = ctx.LastName_Student  || looked.LastName_Student  || looked.LastName  || "";
+        ctx.Class = ctx.Class || looked.Class || "";
+        ctx.Room  = ctx.Room  || looked.Room  || "";
+        ctx.StudentPhone = ctx.StudentPhone || looked.StudentPhone || looked.Phone || "";
+      }
+    }
+    Object.keys(ctx).forEach(k => { if (ctx[k]) fd.append(k, String(ctx[k])); });
+
+    fd.append("IP_Address","Auto"); fd.append("Device", navigator.userAgent); fd.append("Source","EmergencyForm");
+
+    const url = form.action || "https://script.google.com/macros/s/AKfycbxLWBNIqSfa_88ONWAlsK-gNBLQZBVTOT4za3xWFANrZ-_6ZQgmtLD4VB4NlXo2Y6ZD/exec";
+    try {
+      const res = await fetch(url, { method:"POST", body: fd });
+      const txt = await res.text().catch(()=> "");
+      if (res.ok) {
+        statusEl.textContent = "✅ ยืนยันการแจ้งเหตุสำเร็จ"; statusEl.classList.add("text-green-600");
+        if (typeSel) typeSel.value=""; if (locInput) locInput.value=""; if (otherInput) { otherInput.value=""; otherInput.classList.add("hidden"); } if (confirmBox) confirmBox.checked=false;
+      } else {
+        statusEl.textContent = "❌ บันทึกไม่สำเร็จ: " + (txt || res.status); statusEl.classList.add("text-red-600");
+      }
+    } catch(err) {
+      statusEl.textContent = "❌ ไม่สามารถเชื่อมต่อได้: " + err.message; statusEl.classList.add("text-red-600");
+    }
+  });
+})();
+</script>
+
+<script>window.loginScriptURL="https://script.google.com/macros/s/AKfycbytXOkLNA8p-uIJI53L0xGzkOu8f76VSf5pj5kdCH5y7llpgEIQ8zm9rqHoNaxyzi937A/exec";</script>
+<script>
+
+(function(){
+  const form = document.getElementById("icareListenForm");
+  if (!form) return;
+
+  // Add hidden iframe fallback target
+  let iframe = document.getElementById("listenHiddenFrame");
+  if (!iframe) {
+    iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.id = "listenHiddenFrame";
+    document.body.appendChild(iframe);
+  }
+
+  const statusEl = document.getElementById("icareListenStatus");
+  const setStatus = (msg, ok)=>{
+    if (!statusEl) return;
+    statusEl.textContent = msg || "";
+    statusEl.classList.remove("text-red-600","text-green-600");
+    statusEl.classList.add(ok ? "text-green-600":"text-red-600");
+  };
+
+  function getValByPref(ids, names){
+    for (const id of (ids||[])) {
+      const el = document.getElementById(id);
+      if (el && typeof el.value !== "undefined") return String(el.value||"").trim();
+    }
+    for (const nm of (names||[])) {
+      const el = form.querySelector(`[name="${nm}"]`);
+      if (el && typeof el.value !== "undefined") return String(el.value||"").trim();
+    }
+    return "";
+  }
+
+  form.addEventListener("submit", async function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    setStatus("", true);
+
+    if (form.dataset.submitting === "1") return;
+    form.dataset.submitting = "1";
+    const submitBtn = form.querySelector('[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+      // Validate required fields in the form generically
+      const requiredEls = form.querySelectorAll("[required]");
+      for (const el of requiredEls) {
+        if (!el.value || String(el.value).trim() === "") {
+          setStatus("❌ กรุณากรอกข้อมูลให้ครบทุกช่อง", false);
+          if (submitBtn) submitBtn.disabled = false;
+          form.dataset.submitting = "0";
+          return;
+        }
+      }
+
+      // Session / login data
+      let sess = null;
+      try { sess = JSON.parse(sessionStorage.getItem("userData") || "null"); } catch(_){}
+      if (!sess) { try { sess = JSON.parse(localStorage.getItem("userData") || "null"); } catch(_){ } }
+      if (!sess) { try { sess = JSON.parse(localStorage.getItem("studentData") || "null"); } catch(_){ } }
+
+      const user = (sess && sess.data) ? sess.data : sess;
+      const username = user && (user.Username || user.username);
+      if (!username) {
+        setStatus("❌ กรุณาเข้าสู่ระบบก่อนบันทึกข้อมูล", false);
+        if (submitBtn) submitBtn.disabled = false;
+        form.dataset.submitting = "0";
+        return;
+      }
+
+      // Gather values (support multiple DOM names/ids)
+      const reason  = getValByPref(["icareReason"], ["ListenReason","reason"]);
+      const details = getValByPref(["icareDetails"],["ListenDetails","details"]);
+      if (!reason)  { setStatus("❌ กรุณาเลือกสิ่งที่คุณต้องการ", false);  submitBtn && (submitBtn.disabled=false); form.dataset.submitting="0"; return; }
+      if (!details) { setStatus("❌ กรุณากรอกรายละเอียดเพิ่มเติม", false); submitBtn && (submitBtn.disabled=false); form.dataset.submitting="0"; return; }
+
+      // Build payload
+      const fd = new FormData();
+      const rid = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2));
+      fd.append("RequestID", rid);
+      fd.append("Username", username);
+      fd.append("ListenReason", reason);
+      fd.append("ListenDetails", details);
+      fd.append("Source", "ListenForm");
+      fd.append("IP_Address", "Auto");
+      fd.append("Device", navigator.userAgent);
+
+      // pass student context if present
+      const ctx = {
+        StudentID: user && user.StudentID,
+        Prefix_Student: (user && (user.Prefix_Student || user.Prefix)),
+        FirstName_Student: (user && (user.FirstName_Student || user.FirstName)),
+        LastName_Student:  (user && (user.LastName_Student  || user.LastName)),
+        Class: user && user.Class,
+        Room:  user && user.Room,
+        StudentPhone: user && (user.StudentPhone || user.Phone)
+      };
+      Object.keys(ctx).forEach(k => { if (ctx[k]) fd.append(k, String(ctx[k])); });
+
+      const ENDPOINT = "https://script.google.com/macros/s/AKfycbzejn_sGgjDfOYU5nNtOV8hsgESSL0Pc7747Da5kGjwJXhiGzkse13WBliJY9iSy8GV/exec";
+
+      // Try normal fetch first
+      let ok = false, txt = "";
+      try {
+        const resp = await fetch(ENDPOINT, { method: "POST", body: fd });
+        txt = await resp.text().catch(()=> "");
+        ok = resp.ok || (txt && /✅/.test(txt));
+      } catch (err) {
+        // ignore, will fallback
+      }
+
+      if (!ok) {
+        // Hidden iframe fallback (classic HTML POST) to beat CORS/network oddities
+        const tempForm = document.createElement("form");
+        tempForm.action = ENDPOINT;
+        tempForm.method = "POST";
+        tempForm.enctype = "multipart/form-data";
+        tempForm.target = "listenHiddenFrame";
+        tempForm.style.display = "none";
+
+        const add = (k,v)=>{
+          const inp = document.createElement("input");
+          inp.type = "hidden"; inp.name = k; inp.value = v;
+          tempForm.appendChild(inp);
+        };
+        add("RequestID", rid);
+        add("Username", username);
+        add("ListenReason", reason);
+        add("ListenDetails", details);
+        add("Source", "ListenForm");
+        add("IP_Address", "Auto");
+        add("Device", navigator.userAgent);
+        Object.keys(ctx).forEach(k => { if (ctx[k]) add(k, String(ctx[k])); });
+
+        document.body.appendChild(tempForm);
+        tempForm.submit();
+        setTimeout(()=> { document.body.removeChild(tempForm); }, 2000);
+        ok = true; // will rely on GAS idempotency
+      }
+
+      if (ok) {
+        setStatus("✅ บันทึกข้อมูลสำเร็จ", true);
+        form.reset();
+      } else {
+        setStatus("❌ บันทึกไม่สำเร็จ " + (txt ? (": " + txt) : ""), false);
+      }
+
+    } catch (err) {
+      setStatus("❌ ขัดข้อง: " + (err && err.message ? err.message : err), false);
+    } finally {
+      form.dataset.submitting = "0";
+      const submitBtn2 = form.querySelector('[type="submit"]');
+      if (submitBtn2) submitBtn2.disabled = false;
+    }
+  });
+})();
+
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+
+<html lang="th">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>
+   Latbualuang iCARE+ - ติดต่อเรา
+  </title>
+<script src="https://cdn.tailwindcss.com">
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Mitr&amp;display=swap" rel="stylesheet"/>
+<style>
+   .font-mitr { font-family: "Mitr", sans-serif; }
+  </style>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2&amp;display=swap" rel="stylesheet"/>
+<style>
+   .font-exo2 { font-family: "Exo 2", sans-serif; }
+  </style>
+<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/th.js">
+</script>
+</head>
+<body class="bg-gray-100 font-sans">
+<!-- Section 3: Contact -->
+<!-- Footer -->
+<footer class="bg-blue-900 text-white py-8">
+<div class="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-8">
+<!-- Left column -->
+<div>
+<img alt="iCARE+ Logo" class="h-12 mb-2" src="https://img2.pic.in.th/pic/loICARE08d2635f15818a2a.png"/>
+<h3 class="font-bold text-lg text-base sm:text-lg md:text-xl">
+      Latbualuang iCARE+
+     </h3>
+<p class="mt-1">
+      โรงเรียนใส่ใจ ปลอดภัยด้วยปัญญาประดิษฐ์
+     </p>
+<p class="italic text-sm mt-2">
+      "CARE คือ ความใส่ใจที่จับต้องได้ ด้วยเทคโนโลยีและหัวใจมนุษย์"
+     </p>
+<p class="mt-1">โครงการโดย รองฯ ภัทรมณฑน์ ปานมอญ</p>
+</div>
+<!-- Center column -->
+<div>
+<h4 class="font-bold text-lg mb-2">
+      ลิงก์ด่วน
+     </h4>
+<ul>
+<li class="mb-1">
+<a class="hover:underline" href="#">
+        หน้าหลัก
+       </a>
+</li>
+<li>
+<a class="hover:underline" href="#">
+        เกี่ยวกับโครงการ
+       </a>
+</li>
+</ul>
+</div>
+<!-- Right column -->
+<div>
+<h4 class="font-bold text-lg mb-2">
+      ติดต่อ
+     </h4>
+<p>
+      📞 035 379 190
+     </p>
+<p>
+      📧 lpwicare.v2@gmail.com
+     </p>
+<p>
+      โรงเรียนลาดบัวหลวงไพโรจน์วิทยา
+     </p>
+<p>
+      54/15 หมู่ 5 ตำบลพระยาบันลือ
+     </p>
+<p>
+      อำเภอลาดบัวหลวง จังหวัดพระนครศรีอยุธยา 13230
+     </p>
+</div>
+</div>
+<div class="text-center text-sm text-gray-200 mt-8">
+    © 2023 Latbualuang iCARE+ - โรงเรียนใส่ใจ ปลอดภัยด้วยปัญญาประดิษฐ์
+   </div>
+</footer>
+<script>
+   function togglePassword(id) {
+  const input = document.getElementById(id);
+  input.type = input.type === "password" ? "text" : "password";
+}
+  </script>
+<!-- 🚨 Emergency Report Modal (Step 1: UI only) -->
+<div class="fixed z-50 inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden p-4" id="emergencyModal">
+<div class="bg-red-100 rounded-2xl shadow-2xl w-full max-w-md relative overflow-y-auto max-h-screen p-6 font-mitr">
+<button class="absolute top-2 right-2 text-gray-600 hover:text-black" onclick="closeModal('emergencyModal')">
+     ✖
+    </button>
+<h2 class="text-xl sm:text-2xl font-bold text-red-600 mb-4 text-center">
+     🚨🆘 แจ้งเหตุฉุกเฉิน🚨
+    </h2>
+<p class="text-sm text-blue-700 mt-2 mb-2 font-mitr" id="reporterName">
+ 👤 แจ้งโดย: (ระบบกำลังโหลดชื่อผู้แจ้ง...)
+</p>
+<input id="ReportedBy" name="ReportedBy" type="hidden"/>
+<form action="https://script.google.com/macros/s/AKfycbxLWBNIqSfa_88ONWAlsK-gNBLQZBVTOT4za3xWFANrZ-_6ZQgmtLD4VB4NlXo2Y6ZD/exec" class="space-y-3" enctype="multipart/form-data" id="emergencyForm" method="POST">
+<!-- Displayed student info (to be filled in dynamically after login) -->
+<!-- Emergency Type Dropdown -->
+<div>
+<label class="block text-sm">
+       ประเภทเหตุฉุกเฉิน:
+      </label>
+<select class="w-full px-3 py-2 rounded border text-black bg-white" id="emergencyType" name="EmergencyType" onchange="this.style.color='#000';" style="color:#60A5FA;">
+<option disabled="" selected="" value="">
+        -- เลือกประเภทเหตุ --
+       </option>
+<optgroup label="🔴 พฤติกรรมเสี่ยงและอันตราย" style="background-color:#fecaca;">
+<option style="background-color:#fee2e2;">
+         💥 พบนักเรียนมีแนวโน้มทำร้ายตัวเอง
+        </option>
+<option style="background-color:#fee2e2;">
+         👊 ทะเลาะวิวาท / ทำร้ายร่างกายกัน
+        </option>
+<option style="background-color:#fee2e2;">
+         😢 ถูกรังแก / บูลลี่ (Bullying)
+        </option>
+<option style="background-color:#fee2e2;">
+         🚬 พบสารเสพติด / แอลกอฮอล์ / สูบบุหรี่
+        </option>
+<option style="background-color:#fee2e2;">
+         📵 ปัญหาการกลั่นแกล้งทางออนไลน์
+        </option>
+</optgroup>
+<optgroup label="🟠 สุขภาพและสภาวะฉุกเฉิน" style="background-color:#fed7aa;">
+<option style="background-color:#ffedd5;">
+         🤢 ป่วยฉุกเฉิน / เป็นลม / คลื่นไส้ / หายใจไม่ออก
+        </option>
+<option style="background-color:#ffedd5;">
+         🧠 เครียดรุนแรง / วิตกกังวล / ภาวะทางอารมณ์
+        </option>
+<option style="background-color:#ffedd5;">
+         🩹 อุบัติเหตุ / บาดเจ็บจากกิจกรรม / ลื่นล้ม
+        </option>
+</optgroup>
+<optgroup label="🟡 ความปลอดภัยในสถานที่" style="background-color:#fef08a;">
+<option style="background-color:#fef9c3;">
+         🔥 ไฟไหม้ / กลิ่นไหม้ / ไฟฟ้าลัดวงจร
+        </option>
+<option style="background-color:#fef9c3;">
+         ⚠️ พบคนแปลกหน้า / ผู้บุกรุกในโรงเรียน
+        </option>
+<option style="background-color:#fef9c3;">
+         🧯 อุปกรณ์ / อาคารเรียน / สนามเด็กเล่นชำรุด
+        </option>
+<option style="background-color:#fef9c3;">
+         🚶‍♂️ นักเรียนหายตัว / เดินออกจากพื้นที่เรียน
+        </option>
+</optgroup>
+<optgroup label="🟢 หมวดอื่น ๆ" style="background-color:#bbf7d0;">
+<option style="background-color:#dcfce7;" value="อื่น ๆ (ระบุเพิ่มเติม)">
+         💬 อื่น ๆ (ระบุเพิ่มเติม)
+        </option>
+</optgroup>
+</select>
+<input class="mt-2 w-full px-3 py-2 rounded border text-black hidden" id="otherEmergencyInput" name="OtherEmergencyDetail" placeholder="โปรดระบุเพิ่มเติม..." type="text"/>
+</div>
+<!-- Location -->
+<div>
+<label class="block text-sm">
+       สถานที่เกิดเหตุ:
+      </label>
+<input class="w-full px-3 py-2 rounded border text-black" name="Location" required="" type="text"/>
+</div>
+<!-- File Uploads -->
+<div>
+<label class="block text-sm text-black">
+       แนบรูปภาพ (ไม่บังคับ):
+      </label>
+      <input class="w-full px-3 py-2 rounded border text-black" type="file" name="imageFile" accept="image/*"/>
+<label class="block text-sm mt-2 text-black" style="color:#000 !important;">
+       แนบคลิปเสียง (ไม่บังคับ):
+      </label>
+      <input class="w-full px-3 py-2 rounded border text-black" type="file" name="audioFile" accept="audio/*"/>
+<label class="block text-sm mt-2 text-black" style="color:#000 !important;">
+       แนบคลิปวิดีโอ (ไม่บังคับ):
+      </label>
+      <input class="w-full px-3 py-2 rounded border text-black" type="file" name="videoFile" accept="video/*"/>
+<p class="text-xs text-gray-600 mt-1">
+       ขนาดรวมไม่เกิน 5MB
+      </p>
+</div>
+<!-- Confirmation -->
+<label class="inline-flex items-start text-sm text-gray-700">
+<input class="mr-2 mt-1" required="" type="checkbox"/>
+      ข้าพเจ้าขอรับรองว่า ข้อมูลที่กรอกเป็นข้อเท็จจริงทุกประการ
+     </label>
+<p class="text-xs text-red-500 italic">
+      🔒 ข้อมูลจะถูกเก็บเป็นความลับ และส่งถึงครูผู้รับผิดชอบเพื่อดำเนินการช่วยเหลือโดยไม่เปิดเผยต่อผู้อื่น
+     </p>
+<!-- Submit -->
+<div class="text-center pt-2">
+<button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded" type="submit">
+       ยืนยันการแจ้งเหตุ
+      </button>
+<p class="text-sm mt-2" id="emergencyStatus">
+</p>
+</div>
+</form>
+</div>
+</div>
+<script>
+   function toggleOtherInput(value) {
+  const input = document.getElementById("otherEmergencyInput");
+  input.classList.toggle("hidden", value !== "อื่น ๆ (ระบุเพิ่มเติม)");
+}
+  </script>
+<!-- ✅ New Login Modal -->
+<div class="fixed z-50 inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden" id="loginModal">
+<div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm relative font-mitr">
+<button class="absolute top-2 right-2 text-gray-600 hover:text-black" onclick="document.getElementById('loginModal').classList.add('hidden')">
+     ✖
+    </button>
+<h2 class="text-xl font-bold mb-4 text-yellow-600">
+     🔐 เข้าสู่ระบบ
+    </h2>
+<form class="space-y-3" id="loginForm">
+<input class="w-full px-3 py-2 rounded border" name="Username" placeholder="ชื่อผู้ใช้" required="" type="text"/>
+<input class="w-full px-3 py-2 rounded border" name="Password" placeholder="รหัสผ่าน" required="" type="password"/>
+<button class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded" type="submit">
+      เข้าสู่ระบบ
+     </button>
+<p class="text-center text-sm mt-2 text-red-600" id="loginStatus">
+</p>
+</form>
+</div>
+</div>
+<!-- ✅ Login Script -->
+<script>
+   const loginScriptURL = "https://script.google.com/macros/s/AKfycbw7X3QPSj76DJR9eelvRI73MGZIltO_WX1g2OdQ5RIAhfxs_6ecBwJZa6V_qImLctIHuA/exec";
+
+  document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const username = this.Username.value.trim();
+    const password = this.Password.value.trim();
+    const formData = new FormData();
+    formData.append("Username", username);
+    formData.append("username", username);
+    formData.append("Password", password);
+    formData.append("password", password);
+    formData.append("IP_Address", "Auto");
+    formData.append("ip", "Auto");
+    formData.append("Device", navigator.userAgent);
+    formData.append("device", navigator.userAgent);
+
+    fetch(loginScriptURL, {
+      method: "POST",
+      body: formData,
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      const ok = data && (data.success === true || data.status === 'success');
+      if (ok) {
+        sessionStorage.setItem("userData", JSON.stringify(data));
+        document.getElementById("loginStatus").textContent = "✅ 🔐 เข้าสู่ระบบสำเร็จ";
+        document.getElementById("loginModal").classList.add("hidden");
+        enableProtectedFeatures(); if(window.onLoginSuccess){ try{ window.onLoginSuccess(); }catch(_){} }
+alert(`ยินดีต้อนรับ ${data.Prefix}${data.FirstName} ${data.LastName}`);
+      } else {
+        document.getElementById("loginStatus").textContent = "❌ " + data.message;
+      }
+    })
+    .catch((err) => {
+      document.getElementById("loginStatus").textContent = "❌ ข้อผิดพลาด: " + err.message;
+    });
+  });
+
+  function enableProtectedFeatures() {
+    const protectedButtons = document.querySelectorAll(".protected-button, .protected-form");
+    protectedButtons.forEach(btn => {
+      btn.disabled = false;
+      btn.classList.remove("opacity-50", "pointer-events-none");
+    });
+  }
+
+  window.onload = function () {
+    const user = sessionStorage.getItem("userData");
+    if (!user) {
+      const protectedButtons = document.querySelectorAll(".protected-button, .protected-form");
+      protectedButtons.forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add("opacity-50", "pointer-events-none");
+      });
+    } else {
+      enableProtectedFeatures(); if(window.onLoginSuccess){ try{ window.onLoginSuccess(); }catch(_){} }
+}
+  };
+  </script>
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("select option").forEach(opt => {
+    const text = opt.textContent.trim();
+    if (["เด็กชาย", "เด็กหญิง", "นาย", "นางสาว", "-- คำนำหน้า --"].includes(text)) {
+      opt.style.color = "#60A5FA";
+    }
+  });
+});
+  </script>
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("select option").forEach(opt => {
+    const text = opt.textContent.trim();
+    if (text) {
+      opt.style.color = "#60A5FA";
+    }
+  });
+});
+  </script>
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+  const placeholders = ["คำนำหน้า", "ระดับชั้น", "ห้องเรียน", "วว/ดด/ปปปป"];
+  document.querySelectorAll("input[placeholder], select[placeholder]").forEach(el => {
+    if (placeholders.includes(el.placeholder.trim())) {
+      el.style.color = "#60A5FA";
+    }
+  });
+});
+  </script>
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+  const targets = ["-- คำนำหน้า --", "-- ระดับชั้น --", "-- ห้องเรียน --", "วว/ดด/ปปปป"];
+
+  // Set color for placeholder-like options in select dropdowns
+  document.querySelectorAll("select option").forEach(option => {
+    if (targets.includes(option.textContent.trim())) {
+      option.style.color = "#60A5FA";
+    }
+  });
+
+  // Set color for placeholder in input fields
+  document.querySelectorAll("input[placeholder]").forEach(input => {
+    if (targets.includes(input.placeholder.trim())) {
+      input.style.color = "#60A5FA";
+    }
+  });
+});
+  </script>
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+  const blueOptions = ["-- คำนำหน้า --", "-- ระดับชั้น --", "-- ห้องเรียน --", "วว/ดด/ปปปป"];
+  document.querySelectorAll("select option").forEach(opt => {
+    if (blueOptions.includes(opt.textContent.trim())) {
+      opt.style.color = "#60A5FA";
+    }
+  });
+});
+  </script>
+<script>
+   flatpickr("#birthdate", {
+    dateFormat: "d/m/Y",
+    locale: "th",
+    allowInput: true
+  });
+  </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const photoInput = document.getElementById("TeacherPhoto");
+  const statusDiv = document.getElementById("teacherFormMessage");
+
+  if (photoInput) {
+    photoInput.addEventListener("change", function () {
+      const file = this.files[0];
+      if (file && file.size > 1024 * 1024) {
+        statusDiv.textContent = "❌ ขนาดไฟล์ต้องไม่เกิน 1MB";
+        statusDiv.className = "text-red-600";
+        this.value = ""; // ล้างค่า
+      } else {
+        statusDiv.textContent = "";
+        statusDiv.className = "";
+      }
+    });
+  }
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const user = JSON.parse(sessionStorage.getItem("userData") || "{}");
+
+  const fullName = `${user.Prefix || ""}${user.FirstName || ""} ${user.LastName || ""}`.trim();
+  const classroom = user.Class && user.Room ? ` ม.${user.Class}/${user.Room}` : "";
+  const displayName = fullName + classroom;
+
+  // แสดงชื่อใน UI
+  const display = document.getElementById("reporterName");
+  if (display) {
+    display.textContent = "👤 แจ้งโดย: " + displayName;
+  }
+
+  // ใส่ค่า hidden input สำหรับส่งไปใน Google Sheet
+  const input = document.getElementById("ReportedBy");
+  if (input) {
+    input.value = displayName;
+  }
+});
+</script>
+
+<!-- 📞 iCARE พร้อมฟังเสมอ Modal -->
+<div class="fixed z-50 inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden p-4" id="icareListenModal">
+<div class="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 font-mitr relative">
+<button class="absolute top-2 right-2 text-gray-600 hover:text-black" onclick="document.getElementById('icareListenModal').classList.add('hidden')">✖</button>
+<h2 class="text-2xl font-bold text-center mb-4 text-green-600">📞 iCARE พร้อมฟังเสมอ</h2>
+<form class="space-y-4" id="icareListenForm">
+<div>
+<label class="block text-sm font-mitr" for="icareReason" style="color:#60D9A3;">โปรดเลือกสิ่งที่คุณต้องการ:</label>
+<select class="w-full px-3 py-2 rounded border text-black bg-white font-mitr" id="icareReason" name="icareReason" onchange="this.style.color='#000';" required="" style="color:#60D9A3;">
+<option disabled="" selected="" value="">-- กรุณาเลือกเหตุผล --</option>
+<option>😊 อยากเล่าเรื่องบางอย่างให้ใครสักคนฟัง (ไม่ตัดสิน ไม่ต้องแก้ แค่ฟังก็พอแล้ว)</option>
+<option>👩‍🏫 อยากให้ครูประจำชั้นรับรู้เรื่องนี้</option>
+<option>📞 อยากให้ครูหรือผู้ดูแลติดต่อกลับ (ระบุชื่อคนที่ไว้ใจได้เลย เดี๋ยวเราช่วยติดต่อให้)</option>
+<option>🤝 อยากพูดคุยกับเพื่อนที่ไว้ใจและพร้อมรับฟัง (คุยกับคนที่เข้าใจเราบ้าง ก็น่าจะช่วยได้เนอะ)</option>
+<option>👨‍💼 อยากให้ครูหรือผู้บริหารที่ไว้วางใจรับรู้และดูแล (บอกชื่อไว้ได้เลย เดี๋ยวเราช่วยส่งต่อ)</option>
+<option>✍️ อื่น ๆ ที่อยากบอกเพิ่มเติม (พิมพ์ไว้ได้เลย ไม่ต้องเก็บไว้คนเดียว)</option>
+</select>
+</div>
+<div>
+<label class="block text-sm text-gray-700 font-mitr" for="icareDetails">✍️ รายละเอียดเพิ่มเติม (ถ้ามี):</label>
+<textarea class="w-full px-3 py-2 rounded border text-black font-mitr min-h-[150px]" id="icareDetails" name="icareDetails" placeholder="" rows="6" style="resize: none;" required=""></textarea>
+</div>
+<p class="text-sm text-gray-600 mt-2 font-mitr">🔐 ข้อมูลทั้งหมดจะถูกเก็บเป็นความลับและใช้เพื่อดูแลอย่างปลอดภัยเท่านั้น</p>
+<p class="text-sm text-green-600 italic font-mitr">🙏 ขอบคุณที่กล้าเปิดใจ 💛 ไม่จำเป็นต้องเผชิญปัญหาเพียงลำพัง มีคนพร้อมฟังและช่วยเหลือเสมอ</p>
+<div class="text-center">
+<button class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded font-mitr" style="width: auto;" type="submit">บันทึกข้อมูล</button>
+<p class="text-sm mt-2 font-mitr" id="icareListenStatus"></p>
+</div>
+</form>
+</div>
+</div>
+<script>
+  document.getElementById("icareListenForm")?.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const status = document.getElementById("icareListenStatus");
+    status.textContent = "✅ บันทึกสำเร็จ";
+    status.className = "text-green-600";
+    this.reset();
+  });
+</script>
+<!-- Emotion Assessment Modal -->
+<script>
+function showEmotionModal() {
+  const modal = document.getElementById("emotionModal");
+  if (modal) {
+    modal.style.display = "flex";
+  }
+}
+
+function hideEmotionModal() {
+  const modal = document.getElementById("emotionModal");
+  if (modal) {
+    modal.style.display = "none";
+  }
+}
+
+window.addEventListener("click", function (event) {
+  const modal = document.getElementById("emotionModal");
+  if (event.target === modal) {
+    hideEmotionModal();
+  }
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("studentForm");
+  if (!form) return;
+
+  // Mark all relevant fields as required
+  const fields = form.querySelectorAll("input, select, textarea");
+  fields.forEach(el => {
+    const type = (el.getAttribute("type") || "").toLowerCase();
+    if (["button","submit","reset","file"].includes(type)) return;
+    el.setAttribute("required", "required");
+  });
+});
+
+function listMissingFields(form) {
+  const missing = [];
+  const controls = form.querySelectorAll("input[required], select[required], textarea[required]");
+
+  controls.forEach(el => {
+    const type = (el.getAttribute("type") || "").toLowerCase();
+    if (type === "checkbox" || type === "radio") {
+      const group = form.querySelectorAll(`input[name="${el.name}"][type="${type}"]`);
+      const anyChecked = Array.from(group).some(i => i.checked);
+      if (!anyChecked) {
+        const label = form.querySelector(`label[for="${el.id}"]`);
+        missing.push((label && label.textContent.trim()) || el.placeholder || el.name || "(ไม่ทราบชื่อช่อง)");
+      }
+    } else {
+      if (!el.value || el.value.trim() === "") {
+        const label = form.querySelector(`label[for="${el.id}"]`);
+        missing.push((label && label.textContent.trim()) || el.placeholder || el.name || "(ไม่ทราบชื่อช่อง)");
+      }
+    }
+  });
+  return missing;
+}
+
+// Override validateForm to enforce required fields and show messages
+(function() {
+  const POST_URL = "https://script.google.com/macros/s/AKfycbzSeGx-6y5vgurpk1ZUvqY-rJOoJpH-swbX3yes86GIaxyZqZOftOvULYUzx9PTZ6c7/exec";
+  const _orig = window.validateForm;
+
+  window.validateForm = function(event) {
+    event.preventDefault();
+    const form = event.target;
+    const message = document.getElementById("formMessage");
+    if (message) { message.textContent = ""; message.className = "mt-2 text-sm"; }
+
+    // 1) Check required
+    const missing = listMissingFields(form);
+    if (missing.length > 0) {
+      const text = "❌ ข้อมูลไม่ครบถ้วน กรุณากรอกให้ครบทุกช่อง";
+      if (message) {
+        message.textContent = text;
+        message.className = "mt-2 text-sm text-red-600";
+      }
+      return false; // block submission
+    }
+
+    // 2) Check password confirmation if present
+    if (form.Password && form.ConfirmPassword && form.Password.value !== form.ConfirmPassword.value) {
+      if (message) {
+        message.textContent = "❌ รหัสผ่านไม่ตรงกัน";
+        message.className = "mt-2 text-sm text-red-600";
+      }
+      return false;
+    }
+
+    // 3) Submit
+    const formData = new FormData(form);
+    fetch(POST_URL, { method: "POST", body: formData })
+      .then(async (res) => {
+        if (res.ok) {
+          if (message) {
+            message.textContent = "✅ ลงทะเบียนสำเร็จ";
+            message.className = "mt-2 text-sm text-green-600";
+          }
+          form.reset();
+        } else {
+          const t = await res.text().catch(()=>"");
+          if (message) {
+            message.textContent = "❌ ลงทะเบียนไม่สำเร็จ: " + (t || ("HTTP " + res.status));
+            message.className = "mt-2 text-sm text-red-600";
+          }
+        }
+      })
+      .catch(err => {
+        if (message) {
+          message.textContent = "❌ ไม่สามารถเชื่อมต่อได้: " + err.message;
+          message.className = "mt-2 text-sm text-red-600";
+        }
+      });
+
+    return false;
+  };
+})();
+</script>
+
+<script>
+// --- Emergency form wiring (validation + submit to GAS) ---
+(function() {
+  const form = document.getElementById("emergencyForm");
+  if (!form) return;
+  let statusEl = document.getElementById("emergencyStatus");
+  if (!statusEl) { statusEl = document.createElement("p"); statusEl.id = "emergencyStatus"; statusEl.className = "text-sm mt-2"; form.appendChild(statusEl); }
+  const typeSel = document.getElementById("emergencyType") || form.querySelector('[name="EmergencyType"], select[name="emergencyType"]');
+  const locInput = form.querySelector('[name="Location"], #Location, input[name="location"]');
+  const confirmBox = form.querySelector('input[type="checkbox"]');
+  const otherInput = document.getElementById('otherEmergencyInput');
+
+  if (typeSel && otherInput) {
+    typeSel.addEventListener('change', function() {
+      const show = (String(this.value||'').trim() === 'อื่น ๆ (ระบุเพิ่มเติม)');
+      otherInput.classList.toggle('hidden', !show);
+      if (!show) otherInput.value = "";
+    });
+  }
+
+  async function lookupStudentContext(username) {
+    try {
+      if (typeof loginScriptURL !== "string" || !loginScriptURL) return null;
+      const params = new URLSearchParams(); params.append("action","lookup"); params.append("Username", username);
+      const res = await fetch(loginScriptURL, { method: "POST", body: params });
+      if (!res.ok) return null;
+      const ct = res.headers.get("content-type")||"";
+      if (ct.includes("application/json")) {
+        const j = await res.json().catch(()=>null); return j && (j.data || j);
+      } else { try { return JSON.parse(await res.text()); } catch(_) { return null; } }
+    } catch(_) { return null; }
+  }
+
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+    statusEl.textContent = ""; statusEl.className = "text-sm mt-2";
+
+    const typeVal = typeSel ? String(typeSel.value||"").trim() : "";
+    const locVal  = locInput ? String(locInput.value||"").trim() : "";
+    const agreed  = !!(confirmBox && confirmBox.checked);
+    if (!typeVal) { statusEl.textContent = "❌ กรุณาเลือกประเภทเหตุฉุกเฉิน"; statusEl.classList.add("text-red-600"); return; }
+    if (!locVal)  { statusEl.textContent = "❌ กรุณาระบุสถานที่เกิดเหตุ"; statusEl.classList.add("text-red-600"); return; }
+    if (!agreed)  { statusEl.textContent = "❌ กรุณาติ๊กยืนยันว่าเป็นข้อมูลจริงทุกประการ"; statusEl.classList.add("text-red-600"); return; }
+
+    // size check <= 5MB
+    const _fileInputs = form.querySelectorAll('input[type="file"]');
+    let _totalBytes = 0; _fileInputs.forEach(inp => { Array.from(inp.files||[]).forEach(f => { _totalBytes += (f && f.size) ? f.size : 0; }); });
+    if (_totalBytes > 5 * 1024 * 1024) { statusEl.textContent="❌ ขนาดไฟล์แนบรวมเกิน 5MB"; statusEl.classList.add("text-red-600"); return; }
+
+    let session = null; try { session = JSON.parse(sessionStorage.getItem("userData") || "null"); } catch(_){}
+    if (!session) { statusEl.textContent = "❌ กรุณาเข้าสู่ระบบก่อนแจ้งเหตุ"; statusEl.classList.add("text-red-600"); return; }
+    const usr = session && session.data ? session.data : session;
+    const username = usr && (usr.Username || usr.username);
+    if (!username) { statusEl.textContent = "❌ ไม่พบข้อมูลผู้ใช้ กรุณาล็อกอินใหม่"; statusEl.classList.add("text-red-600"); return; }
+
+    const fd = new FormData(form);
+    fd.append("Username", username);
+
+    let ctx = {
+      StudentID: usr.StudentID,
+      Prefix_Student: usr.Prefix_Student || usr.Prefix,
+      FirstName_Student: usr.FirstName_Student || usr.FirstName,
+      LastName_Student: usr.LastName_Student || usr.LastName,
+      Class: usr.Class, Room: usr.Room, StudentPhone: usr.StudentPhone || usr.Phone
+    };
+    if (!ctx.StudentID || !ctx.FirstName_Student || !ctx.LastName_Student) {
+      const looked = await lookupStudentContext(username);
+      if (looked) {
+        ctx.StudentID = ctx.StudentID || looked.StudentID || looked.studentId || "";
+        ctx.Prefix_Student = ctx.Prefix_Student || looked.Prefix_Student || looked.Prefix || "";
+        ctx.FirstName_Student = ctx.FirstName_Student || looked.FirstName_Student || looked.FirstName || "";
+        ctx.LastName_Student  = ctx.LastName_Student  || looked.LastName_Student  || looked.LastName  || "";
+        ctx.Class = ctx.Class || looked.Class || "";
+        ctx.Room  = ctx.Room  || looked.Room  || "";
+        ctx.StudentPhone = ctx.StudentPhone || looked.StudentPhone || looked.Phone || "";
+      }
+    }
+    Object.keys(ctx).forEach(k => { if (ctx[k]) fd.append(k, String(ctx[k])); });
+
+    fd.append("IP_Address","Auto"); fd.append("Device", navigator.userAgent); fd.append("Source","EmergencyForm");
+
+    const url = form.action || "https://script.google.com/macros/s/AKfycbxLWBNIqSfa_88ONWAlsK-gNBLQZBVTOT4za3xWFANrZ-_6ZQgmtLD4VB4NlXo2Y6ZD/exec";
+    try {
+      const res = await fetch(url, { method:"POST", body: fd });
+      const txt = await res.text().catch(()=> "");
+      if (res.ok) {
+        statusEl.textContent = "✅ ยืนยันการแจ้งเหตุสำเร็จ"; statusEl.classList.add("text-green-600");
+        if (typeSel) typeSel.value=""; if (locInput) locInput.value=""; if (otherInput) { otherInput.value=""; otherInput.classList.add("hidden"); } if (confirmBox) confirmBox.checked=false;
+      } else {
+        statusEl.textContent = "❌ บันทึกไม่สำเร็จ: " + (txt || res.status); statusEl.classList.add("text-red-600");
+      }
+    } catch(err) {
+      statusEl.textContent = "❌ ไม่สามารถเชื่อมต่อได้: " + err.message; statusEl.classList.add("text-red-600");
+    }
+  });
+})();
+</script>
+
+<script>window.loginScriptURL="https://script.google.com/macros/s/AKfycbytXOkLNA8p-uIJI53L0xGzkOu8f76VSf5pj5kdCH5y7llpgEIQ8zm9rqHoNaxyzi937A/exec";</script>
+<script>
+
+(function(){
+  const form = document.getElementById("icareListenForm");
+  if (!form) return;
+
+  // Add hidden iframe fallback target
+  let iframe = document.getElementById("listenHiddenFrame");
+  if (!iframe) {
+    iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.id = "listenHiddenFrame";
+    document.body.appendChild(iframe);
+  }
+
+  const statusEl = document.getElementById("icareListenStatus");
+  const setStatus = (msg, ok)=>{
+    if (!statusEl) return;
+    statusEl.textContent = msg || "";
+    statusEl.classList.remove("text-red-600","text-green-600");
+    statusEl.classList.add(ok ? "text-green-600":"text-red-600");
+  };
+
+  function getValByPref(ids, names){
+    for (const id of (ids||[])) {
+      const el = document.getElementById(id);
+      if (el && typeof el.value !== "undefined") return String(el.value||"").trim();
+    }
+    for (const nm of (names||[])) {
+      const el = form.querySelector(`[name="${nm}"]`);
+      if (el && typeof el.value !== "undefined") return String(el.value||"").trim();
+    }
+    return "";
+  }
+
+  form.addEventListener("submit", async function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    setStatus("", true);
+
+    if (form.dataset.submitting === "1") return;
+    form.dataset.submitting = "1";
+    const submitBtn = form.querySelector('[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+      // Validate required fields in the form generically
+      const requiredEls = form.querySelectorAll("[required]");
+      for (const el of requiredEls) {
+        if (!el.value || String(el.value).trim() === "") {
+          setStatus("❌ กรุณากรอกข้อมูลให้ครบทุกช่อง", false);
+          if (submitBtn) submitBtn.disabled = false;
+          form.dataset.submitting = "0";
+          return;
+        }
+      }
+
+      // Session / login data
+      let sess = null;
+      try { sess = JSON.parse(sessionStorage.getItem("userData") || "null"); } catch(_){}
+      if (!sess) { try { sess = JSON.parse(localStorage.getItem("userData") || "null"); } catch(_){ } }
+      if (!sess) { try { sess = JSON.parse(localStorage.getItem("studentData") || "null"); } catch(_){ } }
+
+      const user = (sess && sess.data) ? sess.data : sess;
+      const username = user && (user.Username || user.username);
+      if (!username) {
+        setStatus("❌ กรุณาเข้าสู่ระบบก่อนบันทึกข้อมูล", false);
+        if (submitBtn) submitBtn.disabled = false;
+        form.dataset.submitting = "0";
+        return;
+      }
+
+      // Gather values (support multiple DOM names/ids)
+      const reason  = getValByPref(["icareReason"], ["ListenReason","reason"]);
+      const details = getValByPref(["icareDetails"],["ListenDetails","details"]);
+      if (!reason)  { setStatus("❌ กรุณาเลือกสิ่งที่คุณต้องการ", false);  submitBtn && (submitBtn.disabled=false); form.dataset.submitting="0"; return; }
+      if (!details) { setStatus("❌ กรุณากรอกรายละเอียดเพิ่มเติม", false); submitBtn && (submitBtn.disabled=false); form.dataset.submitting="0"; return; }
+
+      // Build payload
+      const fd = new FormData();
+      const rid = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2));
+      fd.append("RequestID", rid);
+      fd.append("Username", username);
+      fd.append("ListenReason", reason);
+      fd.append("ListenDetails", details);
+      fd.append("Source", "ListenForm");
+      fd.append("IP_Address", "Auto");
+      fd.append("Device", navigator.userAgent);
+
+      // pass student context if present
+      const ctx = {
+        StudentID: user && user.StudentID,
+        Prefix_Student: (user && (user.Prefix_Student || user.Prefix)),
+        FirstName_Student: (user && (user.FirstName_Student || user.FirstName)),
+        LastName_Student:  (user && (user.LastName_Student  || user.LastName)),
+        Class: user && user.Class,
+        Room:  user && user.Room,
+        StudentPhone: user && (user.StudentPhone || user.Phone)
+      };
+      Object.keys(ctx).forEach(k => { if (ctx[k]) fd.append(k, String(ctx[k])); });
+
+      const ENDPOINT = "https://script.google.com/macros/s/AKfycbzejn_sGgjDfOYU5nNtOV8hsgESSL0Pc7747Da5kGjwJXhiGzkse13WBliJY9iSy8GV/exec";
+
+      // Try normal fetch first
+      let ok = false, txt = "";
+      try {
+        const resp = await fetch(ENDPOINT, { method: "POST", body: fd });
+        txt = await resp.text().catch(()=> "");
+        ok = resp.ok || (txt && /✅/.test(txt));
+      } catch (err) {
+        // ignore, will fallback
+      }
+
+      if (!ok) {
+        // Hidden iframe fallback (classic HTML POST) to beat CORS/network oddities
+        const tempForm = document.createElement("form");
+        tempForm.action = ENDPOINT;
+        tempForm.method = "POST";
+        tempForm.enctype = "multipart/form-data";
+        tempForm.target = "listenHiddenFrame";
+        tempForm.style.display = "none";
+
+        const add = (k,v)=>{
+          const inp = document.createElement("input");
+          inp.type = "hidden"; inp.name = k; inp.value = v;
+          tempForm.appendChild(inp);
+        };
+        add("RequestID", rid);
+        add("Username", username);
+        add("ListenReason", reason);
+        add("ListenDetails", details);
+        add("Source", "ListenForm");
+        add("IP_Address", "Auto");
+        add("Device", navigator.userAgent);
+        Object.keys(ctx).forEach(k => { if (ctx[k]) add(k, String(ctx[k])); });
+
+        document.body.appendChild(tempForm);
+        tempForm.submit();
+        setTimeout(()=> { document.body.removeChild(tempForm); }, 2000);
+        ok = true; // will rely on GAS idempotency
+      }
+
+      if (ok) {
+        setStatus("✅ บันทึกข้อมูลสำเร็จ", true);
+        form.reset();
+      } else {
+        setStatus("❌ บันทึกไม่สำเร็จ " + (txt ? (": " + txt) : ""), false);
+      }
+
+    } catch (err) {
+      setStatus("❌ ขัดข้อง: " + (err && err.message ? err.message : err), false);
+    } finally {
+      form.dataset.submitting = "0";
+      const submitBtn2 = form.querySelector('[type="submit"]');
+      if (submitBtn2) submitBtn2.disabled = false;
+    }
+  });
+})();
+
+</script>
+</body>
+</html>
